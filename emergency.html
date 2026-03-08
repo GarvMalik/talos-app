@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talos Care - Emergency</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0" />
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <header class="app-header">
+            <button class="back-btn" onclick="window.history.back()">
+                <span class="material-symbols-rounded">arrow_back_ios_new</span>
+            </button>
+            <h1>Emergency Protocols</h1>
+            <div class="spacer"></div> </header>
+
+        <main>
+            <div class="warning-banner">
+                <p>If you or someone else is in immediate life-threatening danger, do not wait. Contact emergency services right away.</p>
+            </div>
+
+            <button class="btn-danger">
+                <span class="material-symbols-rounded">call</span>
+                <div class="btn-danger-text">
+                    <h3>Call 112 (General)</h3>
+                    <p>Ambulance, Police, and Fire.</p>
+                </div>
+            </button>
+
+            <div class="support-card">
+                <h3>Medical Helpline (Päivystysapu)</h3>
+                <p>Call 116 117 for urgent health problems when your local health center is closed.</p>
+                <button class="btn-card-action">
+                     <span class="material-symbols-rounded">call</span>Call 116 117</button>
+            </div>
+
+            <div class="support-card">
+                <h3>MIELI Crisis Helpline</h3>
+                <p>09 2525 0113. Available 24/7 for urgent mental health support in English.</p>
+                <button class="btn-card-action">
+                    <span class="material-symbols-rounded">call</span>Call MIELI
+                </button>
+            </div>
+
+            <div class="support-card">
+                <h3>Poison Information Centre</h3>
+                <p>0800 147 111. Open 24/7 for advice on suspected poisonings.</p>
+                <button class="btn-card-action">
+                    <span class="material-symbols-rounded">call</span>Call Poison Control
+                </button>
+            </div>
+        </main>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
