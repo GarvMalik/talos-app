@@ -503,8 +503,15 @@ input:checked + .slider:before { transform: translateX(22px); }
 /* =========================================
    09. CHAT INTERFACE (FIXED NATIVE LAYOUT)
    ========================================= */
-body.chat-layout {
-    height: 100dvh; 
+
+body.chat-layout, body.fixed-page {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    min-height: 100%;
     overflow: hidden; 
 }
 
@@ -546,7 +553,6 @@ body.chat-layout .app-header::before {
     flex-direction: column;
     gap: 12px;
     padding-bottom: 20px;
-    margin-top: auto; 
 }
 
 .chat-input-wrapper {
@@ -1081,21 +1087,35 @@ body.high-contrast .success-title {
    12. DYNAMIC TEXT SIZING
    ========================================= */
 
+/* =========================================
+   12. DYNAMIC TEXT SIZING
+   ========================================= */
+
+/* SMALL TEXT MODE */
 body.text-size-S h1 { font-size: clamp(20px, 4vw, 24px) !important; }
 body.text-size-S h2 { font-size: clamp(22px, 4.5vw, 26px) !important; }
 body.text-size-S h3 { font-size: clamp(16px, 3.5vw, 20px) !important; }
 body.text-size-S p, 
 body.text-size-S span:not(.material-symbols-rounded):not(.slider),
+body.text-size-S li,
+body.text-size-S label,
+body.text-size-S strong,
+body.text-size-S button,
 body.text-size-S .message,
 body.text-size-S .btn-chat-choice,
-body.text-size-S .btn-quick-reply { font-size: clamp(14px, 3vw, 16px) !important; }
-body.text-size-S .input-box input { font-size: clamp(16px, 3vw, 18px) !important; }
+body.text-size-S .btn-quick-reply,
+body.text-size-S .input-box input { font-size: clamp(14px, 3vw, 16px) !important; }
 
+/* LARGE TEXT MODE */
 body.text-size-L h1 { font-size: clamp(28px, 6vw, 36px) !important; }
 body.text-size-L h2 { font-size: clamp(30px, 6.5vw, 40px) !important; }
 body.text-size-L h3 { font-size: clamp(24px, 5vw, 32px) !important; }
 body.text-size-L p, 
 body.text-size-L span:not(.material-symbols-rounded):not(.slider),
+body.text-size-L li,
+body.text-size-L label,
+body.text-size-L strong,
+body.text-size-L button,
 body.text-size-L .message,
 body.text-size-L .btn-chat-choice,
 body.text-size-L .btn-quick-reply,

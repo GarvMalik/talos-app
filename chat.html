@@ -51,9 +51,9 @@
                 </div>
                 
                 <div class="input-box">
-                    <input type="text" placeholder="Type your answer...">
+                    <input type="text" id="chatInput" placeholder="Type your answer...">
                     <button class="btn-mic"><span class="material-symbols-rounded">mic</span></button>
-                    <button class="btn-send" onclick="triggerEnding('Sent via text')"><span class="material-symbols-rounded">arrow_upward</span></button>
+                    <button class="btn-send" onclick="sendTypedMessage()"><span class="material-symbols-rounded">arrow_upward</span></button>
                 </div>
             </div>
 
@@ -101,6 +101,26 @@
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }, 50);
         }
+        // Grab the input box
+const chatInput = document.getElementById('chatInput');
+
+// Listen specifically for the Enter key
+chatInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); 
+        sendTypedMessage();
+    }
+});
+
+// Grab the typed text and send it to the chat
+function sendTypedMessage() {
+    const text = chatInput.value.trim();
+    
+    // Only send if the user actually typed something
+    if (text !== '') {
+        triggerEnding(text);
+    }
+}
     </script>
 </body>
 </html>
