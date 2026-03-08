@@ -33,49 +33,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 2. Speak AI Response (Called from the Chat page)
+// 2. Speak AI Response (Bulletproof Version)
 function speakAIResponse(text) {
-    // Stop immediately if silent mode is on
-    if (localStorage.getItem('silentMode') === 'true') {
+    const isMuted = localStorage.getItem('silentMode') === 'true';
+    if (isMuted) {
+        console.log("TTS blocked: Silent Mode is ON.");
         return; 
     }
 
     const synth = window.speechSynthesis;
-    synth.cancel(); // Clear any existing speech
+    synth.cancel(); 
 
     const utterance = new SpeechSynthesisUtterance(text);
-
-    // Pull user settings
-    const lang = localStorage.getItem('ttsLanguage') || 'en-US';
-    const voicePreference = localStorage.getItem('ttsVoiceType') || 'female';
-
-    // Set a calm, slow pace
-    utterance.lang = lang;
+    
+    // Force max volume
+    utterance.volume = 1;
     utterance.rate = 0.85; 
     utterance.pitch = 0.95; 
 
-    // Find the right voice match
+    const lang = localStorage.getItem('ttsLanguage') || 'en-US';
+    utterance.lang = lang;
+
+    // Try to attach a specific voice, but don't fail if we can't find one
     let voices = synth.getVoices();
     if (voices.length > 0) {
+        const voicePreference = localStorage.getItem('ttsVoiceType') || 'female';
         let langVoices = voices.filter(v => v.lang.startsWith(lang.substring(0, 2)));
         let selectedVoice = langVoices.find(v => v.name.toLowerCase().includes(voicePreference));
 
-        if (!selectedVoice && langVoices.length > 0) {
-            selectedVoice = langVoices[0]; // Fallback to the first voice in that language
-        }
-        
         if (selectedVoice) {
             utterance.voice = selectedVoice;
+        } else if (langVoices.length > 0) {
+            utterance.voice = langVoices[0]; // Just grab the first available language voice
         }
     }
 
+    // If the browser blocks it, tell us why!
+    utterance.onerror = function(event) {
+        console.error("Voice Error:", event);
+        alert("Voice failed to play. Error: " + event.error);
+    };
+
     synth.speak(utterance);
-}
-
-// Pre-load browser voices in the background
-window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-
-// 3. Stop Audio Manually
-function stopSpeaking() {
-    window.speechSynthesis.cancel();
 }
