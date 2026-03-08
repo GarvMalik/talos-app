@@ -68,18 +68,12 @@
           </div>
 
           <div class="input-box">
-            <input
-              type="text"
-              id="chatInput"
-              placeholder="Type your answer..."
-            />
-            <button class="btn-mic">
-              <span class="material-symbols-rounded">mic</span>
-            </button>
+            <textarea id="chatInput" rows="1" placeholder="Type your answer..."></textarea>
+            <button class="btn-mic" id="micButton"><span class="material-symbols-rounded">mic</span></button>
             <button class="btn-send" onclick="sendTypedMessage()">
               <span class="material-symbols-rounded">arrow_upward</span>
             </button>
-          </div>
+            </div>
         </div>
 
         <button
@@ -102,61 +96,7 @@
     </div>
 
     <script src="script.js"></script>
-    <script>
-      const chatContainer = document.getElementById("chatContainer");
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-
-      chatContainer.addEventListener("scroll", function () {
-        const header = document.querySelector(".app-header");
-        if (chatContainer.scrollTop > 10) {
-          header.classList.add("scrolled");
-        } else {
-          header.classList.remove("scrolled");
-        }
-      });
-
-      chatContainer.dispatchEvent(new Event("scroll"));
-
-      function triggerEnding(userChoiceText) {
-        const chatHistory = document.getElementById("chatHistory");
-
-        document.getElementById("choiceButtons").style.display = "none";
-
-        chatHistory.innerHTML += `<div class="message user-message">${userChoiceText}</div>`;
-
-        chatHistory.innerHTML += `
-                <div class="message system-message" style="margin-top: 12px;">
-                    <strong>Thank you.</strong> I have all the information the doctor needs.
-                </div>
-            `;
-
-        document.getElementById("activeInputArea").style.display = "none";
-        document.getElementById("reviewButton").style.display = "flex";
-
-        setTimeout(() => {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }, 50);
-      }
-      // Grab the input box
-      const chatInput = document.getElementById("chatInput");
-
-      // Listen specifically for the Enter key
-      chatInput.addEventListener("keypress", function (event) {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          sendTypedMessage();
-        }
-      });
-
-      // Grab the typed text and send it to the chat
-      function sendTypedMessage() {
-        const text = chatInput.value.trim();
-
-        // Only send if the user actually typed something
-        if (text !== "") {
-          triggerEnding(text);
-        }
-      }
     </script>
+    <script src="chat.js"></script>
   </body>
 </html>
