@@ -243,3 +243,17 @@ function triggerEnding(userChoiceText) {
     // Attempt to auto-play the voice
     speakAIResponse(aiText);
 }
+
+/* =========================================
+   06. INITIAL GREETING VOICE
+   ========================================= */
+// When the chat page loads, wait 1 second and then read the intro
+document.addEventListener('DOMContentLoaded', () => {
+    // Make sure we are actually on the chat page before talking
+    if (document.getElementById('chatHistory')) {
+        setTimeout(() => {
+            const introText = "Hello! Can we start with the screening?";
+            speakAIResponse(introText);
+        }, 1000); // 1000ms = 1 second delay feels natural
+    }
+});

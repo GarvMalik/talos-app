@@ -46,10 +46,10 @@ function speakAIResponse(text) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // Force max volume
+    // Force max volume, normal speed, and normal pitch
     utterance.volume = 1;
-    utterance.rate = 0.85; 
-    utterance.pitch = 0.95; 
+    utterance.rate = 1.0; // Changed from 0.85 to normal speed
+    utterance.pitch = 1.0; // Changed from 0.95 to normal pitch
 
     const lang = localStorage.getItem('ttsLanguage') || 'en-US';
     utterance.lang = lang;

@@ -30,18 +30,20 @@ button:active {
 /* =========================================
    02. BASE LAYOUT & BACKGROUND
    ========================================= */
+
 body {
     background-color: #F8F3E6;
     background-image:
         linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
     background-size: 20px 20px;
+    background-attachment: fixed; /* THIS FREEZES THE BACKGROUND */
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
     overflow-y: scroll; 
-    scrollbar-gutter: stable; /* Kills the scrollbar jumping bug */
+    scrollbar-gutter: stable; 
 }
 
 .mobile-container {
