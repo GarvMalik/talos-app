@@ -142,7 +142,7 @@ body {
 /* Base Icon Color */
 .icon-lock {
     color: #386641;
-    font-size: 24px;
+    font-size: 32px;
 }
 
 /* =========================================
@@ -774,6 +774,43 @@ body.chat-layout .app-header::before {
 
 .btn-speaker .material-symbols-rounded {
     font-size: 24px;
+}
+/* Dynamic Pill Buttons */
+.dynamic-options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.btn-pill {
+    background-color: #EBF2EC;
+    color: #386641;
+    border: 1px solid transparent;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-pill:hover {
+    background-color: #386641;
+    color: white;
+}
+
+/* High Contrast mode for pills */
+body.high-contrast .btn-pill {
+    background-color: #1E1E1E;
+    color: #5B9B43;
+    border: 1px solid #5B9B43;
+}
+
+body.high-contrast .btn-pill:hover {
+    background-color: #5B9B43;
+    color: #121212;
 }
 /* =========================================
    10. REVIEW & SUCCESS PAGES

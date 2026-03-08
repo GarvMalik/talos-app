@@ -25,30 +25,26 @@
 
       <main class="chat-area" id="chatContainer">
         <div class="chat-history" id="chatHistory">
-          <div class="message ai-message">Hello :)</div>
-          <div class="message ai-message">Can we start with screening</div>
-
-          <div class="message user-message">go on</div>
-
-          <div class="message ai-message">now i will need few of answers</div>
-          <div class="message ai-message">
-            Have you experienced any of the following symptoms in the last 48
-            hours?
           </div>
+      </main>
 
-          <div class="chat-choices" id="choiceButtons">
-            <button class="btn-chat-choice" onclick="triggerEnding('Yes')">
-              Yes
-            </button>
-            <button class="btn-chat-choice" onclick="triggerEnding('No')">
-              No
-            </button>
-            <button class="btn-chat-choice" onclick="triggerEnding('Not sure')">
-              Not sure
+      <div class="chat-input-wrapper" id="inputWrapper" style="display: none;">
+        <div id="activeInputArea">
+          <div class="input-box">
+            <textarea id="chatInput" rows="1" placeholder="Type your answer..."></textarea>
+            <button class="btn-mic" id="micButton"><span class="material-symbols-rounded">mic</span></button>
+            <button class="btn-send" onclick="sendTypedMessage()">
+              <span class="material-symbols-rounded">arrow_upward</span>
             </button>
           </div>
         </div>
-      </main>
+      </div>
+      
+      <div style="padding: 0 24px 24px 24px;">
+        <button id="reviewButton" class="btn-primary" style="display: none; height: 60px; justify-content: center; border-radius: 30px; margin-bottom: 0;" onclick="navigateTo('review.html')">
+          <span style="font-size: 22px; font-weight: 600">Review My Summary</span>
+        </button>
+      </div>
 
       <div class="chat-input-wrapper">
         <div id="activeInputArea">

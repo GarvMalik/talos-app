@@ -39,41 +39,165 @@ if (SpeechRecognition) {
 }
 
 /* =========================================
-   03. CORE SEND LOGIC
+   03. CORE AI LOGIC (JSON STATE MACHINE)
    ========================================= */
-function triggerEnding(userChoiceText) {
-    const chatHistory = document.getElementById('chatHistory');
-    
-    document.getElementById('choiceButtons').style.display = 'none';
-    chatHistory.innerHTML += `<div class="message user-message">${userChoiceText}</div>`;
-    
-    chatHistory.innerHTML += `
-        <div class="message system-message" style="margin-top: 12px;">
-            <strong>Thank you.</strong> I have all the information the doctor needs.
-        </div>
-    `;
 
-    document.getElementById('activeInputArea').style.display = 'none';
-    document.getElementById('reviewButton').style.display = 'flex';
+let conversationHistory = [];
 
-    setTimeout(() => {
-        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 50);
+// The strict instructions for the AI
+const SYSTEM_PROMPT = `
+You are Talos, a clinical intake assistant. 
+Your job is to guide the user through a structured medical screening.
+You MUST ALWAYS respond with valid JSON matching this exact format:
+{
+  "message": "The text you want to say to the patient",
+  "options": ["Option 1", "Option 2", "Option 3"]
 }
 
+Rules:
+1. Start by introducing yourself, explaining the process, and asking for their main concern.
+2. Provide 2 to 4 logical options for them to click based on your question.
+3. If you need them to type a specific custom answer, return an empty array for options: [].
+4. Ask about symptoms, sleep, and stress. 
+5. When you have enough info, set the message to "Thank you. I have all the information the doctor needs." and options to [].
+`;
+
+// Start the chat automatically when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('chatHistory')) {
+        // Send a hidden trigger to start the AI
+        fetchGeminiResponse("START_SCREENING");
+    }
+});
+
+// Handle when a user clicks a pill button
+function sendOption(selectedText) {
+    const chatHistory = document.getElementById('chatHistory');
+    
+    // Remove the buttons from the screen so they can't be clicked again
+    const oldOptions = document.querySelector('.dynamic-options-container:last-of-type');
+    if (oldOptions) oldOptions.remove();
+
+    // Hide the text box if it was open
+    document.getElementById('inputWrapper').style.display = 'none';
+
+    // Show the user's choice
+    chatHistory.innerHTML += `<div class="message user-message">${selectedText}</div>`;
+    scrollToBottom();
+
+    // Send it to the AI
+    fetchGeminiResponse(selectedText);
+}
+
+// Handle when a user types a custom message
 function sendTypedMessage() {
-    if (!chatInput) return;
+    const chatInput = document.getElementById('chatInput');
     const text = chatInput.value.trim();
     
     if (text !== '') {
-        triggerEnding(text);
+        const chatHistory = document.getElementById('chatHistory');
+        chatHistory.innerHTML += `<div class="message user-message">${text}</div>`;
+        
         chatInput.value = '';
         chatInput.style.height = 'auto';
-        isSecondInputSession = false; 
-        chatInput.placeholder = "Type your answer...";
+        document.getElementById('inputWrapper').style.display = 'none';
+        
+        scrollToBottom();
+        fetchGeminiResponse(text);
     }
 }
 
+async function fetchGeminiResponse(userInput) {
+    const chatHistory = document.getElementById('chatHistory');
+    const apiKey = localStorage.getItem('geminiApiKey');
+
+    if (!apiKey) {
+        chatHistory.innerHTML += `<div class="message system-message">Please paste your API key in the settings.</div>`;
+        return;
+    }
+
+    // Don't show the secret start command to the user
+    if (userInput !== "START_SCREENING") {
+        conversationHistory.push({ role: "user", parts: [{ text: userInput }] });
+    }
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                contents: conversationHistory.length > 0 ? conversationHistory : [{ role: "user", parts: [{ text: "START_SCREENING" }] }],
+                generationConfig: { responseMimeType: "application/json" } // FORCES JSON OUTPUT
+            })
+        });
+
+        const data = await response.json();
+        
+        // Parse the JSON the AI sent back
+        const aiResponseJSON = JSON.parse(data.candidates[0].content.parts[0].text);
+        const aiMessage = aiResponseJSON.message;
+        const aiOptions = aiResponseJSON.options;
+
+        // Save AI reply to memory
+        conversationHistory.push({ role: "model", parts: [{ text: JSON.stringify(aiResponseJSON) }] });
+
+        // Print the AI message
+        chatHistory.innerHTML += `
+            <div class="ai-message-row" style="margin-top: 12px;">
+                <div class="message ai-message" style="margin-top: 0;">${aiMessage}</div>
+                <button class="btn-speaker" onclick="speakAIResponse('${aiMessage.replace(/'/g, "\\'")}')" title="Play Audio">
+                    <span class="material-symbols-rounded">volume_up</span>
+                </button>
+            </div>
+        `;
+
+        // Check if the AI ended the screening
+        if (aiMessage.includes("Thank you. I have all the information")) {
+            document.getElementById('reviewButton').style.display = 'flex';
+            speakAIResponse(aiMessage);
+            scrollToBottom();
+            return;
+        }
+
+        // Render the pill buttons or the text box
+        if (aiOptions && aiOptions.length > 0) {
+            let buttonsHTML = '<div class="dynamic-options-container">';
+            aiOptions.forEach(option => {
+                buttonsHTML += `<button class="btn-pill" onclick="sendOption('${option}')">${option}</button>`;
+            });
+            buttonsHTML += `<button class="btn-pill" onclick="showTextInput()">I'd rather type</button>`;
+            buttonsHTML += '</div>';
+            chatHistory.innerHTML += buttonsHTML;
+        } else {
+            // The AI sent an empty array, meaning it needs typed input
+            document.getElementById('inputWrapper').style.display = 'block';
+        }
+        
+        speakAIResponse(aiMessage);
+        scrollToBottom();
+
+    } catch (error) {
+        console.error("API Error:", error);
+        chatHistory.innerHTML += `<div class="message system-message" style="color: #BC4749;">Connection error. Please check your API key.</div>`;
+    }
+}
+
+function showTextInput() {
+    // Remove buttons and show the text box
+    const oldOptions = document.querySelector('.dynamic-options-container:last-of-type');
+    if (oldOptions) oldOptions.remove();
+    document.getElementById('inputWrapper').style.display = 'block';
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    if (chatContainer) {
+        setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }, 50);
+    }
+}
 /* =========================================
    04. TIMERS & EVENT HANDLERS
    ========================================= */
@@ -211,39 +335,97 @@ if (micButton && recognition) {
 }
 
 /* =========================================
-   03. CORE SEND LOGIC
+   03. CORE SEND LOGIC (REAL AI CONNECTED)
    ========================================= */
 
-function triggerEnding(userChoiceText) {
+// Create a memory array so the AI remembers the conversation
+let conversationHistory = [];
+
+async function triggerEnding(userChoiceText) {
     const chatHistory = document.getElementById('chatHistory');
+    const choiceButtons = document.getElementById('choiceButtons');
+    const chatInput = document.getElementById('chatInput');
     
-    document.getElementById('choiceButtons').style.display = 'none';
+    // Hide the starting buttons if they are there
+    if (choiceButtons) choiceButtons.style.display = 'none';
+    
+    // 1. Show the user's message on screen
     chatHistory.innerHTML += `<div class="message user-message">${userChoiceText}</div>`;
-    
-    const aiText = "Thank you. I have all the information the doctor needs.";
-    
-    chatHistory.innerHTML += `
-        <div class="ai-message-row" style="margin-top: 12px;">
-            <div class="message system-message" style="margin-top: 0;">
-                <strong>Thank you.</strong> I have all the information the doctor needs.
+    if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // 2. Add the user's message to our memory
+    conversationHistory.push({
+        role: "user",
+        parts: [{ text: userChoiceText }]
+    });
+
+    // 3. Get the API key from settings
+    const apiKey = localStorage.getItem('geminiApiKey');
+    if (!apiKey) {
+        const errorMsg = "Please paste your API key in the settings first.";
+        chatHistory.innerHTML += `<div class="message system-message">${errorMsg}</div>`;
+        speakAIResponse(errorMsg);
+        return;
+    }
+
+    // Change placeholder so the user knows it is thinking
+    if (chatInput) chatInput.placeholder = "Talos is thinking...";
+
+    // 4. Send it to Google Gemini
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                systemInstruction: {
+                    parts: [{ text: "You are Talos, a compassionate and professional medical screening assistant. Ask one intake question at a time about symptoms, sleep quality, and stress levels. Keep your responses short and conversational. NEVER diagnose or give medical advice. Once you have asked 3 or 4 questions and gathered enough information, end the conversation by saying exactly: 'Thank you. I have all the information the doctor needs.'" }]
+                },
+                contents: conversationHistory
+            })
+        });
+
+        const data = await response.json();
+        
+        // Grab the text the AI sent back
+        const aiText = data.candidates[0].content.parts[0].text;
+
+        // Save AI reply to memory
+        conversationHistory.push({
+            role: "model",
+            parts: [{ text: aiText }]
+        });
+
+        // 5. Show the AI's message on screen
+        chatHistory.innerHTML += `
+            <div class="ai-message-row" style="margin-top: 12px;">
+                <div class="message ai-message" style="margin-top: 0;">
+                    ${aiText}
+                </div>
+                <button class="btn-speaker" onclick="speakAIResponse('${aiText.replace(/'/g, "\\'")}')" title="Play Audio">
+                    <span class="material-symbols-rounded">volume_up</span>
+                </button>
             </div>
-            <button class="btn-speaker" onclick="speakAIResponse('${aiText}')" title="Play Audio">
-                <span class="material-symbols-rounded">volume_up</span>
-            </button>
-        </div>
-    `;
-
-    document.getElementById('activeInputArea').style.display = 'none';
-    document.getElementById('reviewButton').style.display = 'flex';
-
-    setTimeout(() => {
+        `;
+        
         if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 50);
+        
+        // Speak the reply out loud
+        speakAIResponse(aiText);
 
-    // Attempt to auto-play the voice
-    speakAIResponse(aiText);
+        if (chatInput) chatInput.placeholder = "Type your answer...";
+
+        // 6. Check if the AI decided the screening is over
+        if (aiText.includes("Thank you. I have all the information")) {
+            document.getElementById('activeInputArea').style.display = 'none';
+            document.getElementById('reviewButton').style.display = 'flex';
+        }
+
+    } catch (error) {
+        console.error("API Error:", error);
+        chatHistory.innerHTML += `<div class="message system-message" style="color: #BC4749;">Connection error. Please try again.</div>`;
+        if (chatInput) chatInput.placeholder = "Type your answer...";
+    }
 }
-
 /* =========================================
    06. INITIAL GREETING VOICE
    ========================================= */
