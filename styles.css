@@ -380,6 +380,27 @@ body {
 input:checked + .slider { background-color: #4A8446; }
 input:checked + .slider:before { transform: translateX(22px); }
 
+.settings-dropdown {
+    background-color: transparent;
+    border: none;
+    color: #386641; /* Matches your theme color */
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Make sure it stays readable in dark mode */
+body.high-contrast .settings-dropdown {
+    color: #FFFFFF;
+}
+
+body.high-contrast .settings-dropdown option {
+    color: #000000; /* Keeps the dropdown menu items readable */
+}
+
 /* =========================================
    08. PAST SUMMARIES PAGE
    ========================================= */
@@ -639,7 +660,7 @@ body.chat-layout .app-header::before {
     color: #444;
     border: none;
     padding: 12px 8px;
-    border-radius: 20px;
+    border-radius: 50px;
     font-size: 15px;
     font-weight: 600;
     text-align: center;
@@ -651,10 +672,13 @@ body.chat-layout .app-header::before {
     display: flex;
     align-items: flex-end; /* Keeps the mic and send buttons at the bottom */
     background-color: white;
-    border-radius: 24px; 
-    padding: 10px 6px 10px 20px;
+    border-radius: 50px; 
+    padding: 10px 10px 10px 20px;
     border: 1px solid transparent;
     transition: border-color 0.2s ease;
+}
+#chatInput{
+    margin: auto;
 }
 
 .input-box:focus-within {
@@ -709,6 +733,19 @@ body.chat-layout .app-header::before {
     font-size: 24px;
 }
 
+/* Mic Recording State */
+.btn-mic.recording {
+    background-color: rgba(188, 71, 73, 0.1); /* Soft red background */
+    border-radius: 50%;
+    animation: pulse-mic 1.5s infinite;
+    color: #BC4749 !important;
+}
+
+@keyframes pulse-mic {
+    0% { box-shadow: 0 0 0 0 rgba(188, 71, 73, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(188, 71, 73, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(188, 71, 73, 0); }
+}
 /* =========================================
    10. REVIEW & SUCCESS PAGES
    ========================================= */

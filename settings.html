@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="settings-group">
+            <!-- <div class="settings-group">
                 <h3 class="settings-title">Interaction Preferences</h3>
                 <div class="settings-card">
                     <div class="settings-row">
@@ -59,6 +59,42 @@
                             <span>Neutral</span>
                         </div>
                     </div>
+                </div>
+            </div> -->
+            <div class="settings-group">
+                <h3 class="settings-title">Voice & Interaction</h3>
+                <div class="settings-card">
+                    
+                    <div class="settings-row">
+                        <span>Silent Mode (Mute AI)</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="silentModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-divider"></div>
+                    
+                    <div class="settings-row">
+                        <span>Spoken Language</span>
+                        <select id="languageSelect" class="settings-dropdown">
+                            <option value="en-US">English</option>
+                            <option value="fi-FI">Finnish</option>
+                            <option value="sv-SE">Swedish</option>
+                        </select>
+                    </div>
+                    
+                    <div class="settings-divider"></div>
+                    
+                    <div class="settings-row">
+                        <span>Voice Type</span>
+                        <select id="voiceTypeSelect" class="settings-dropdown">
+                            <option value="female">Female</option>
+                            <option value="male">Male</option>
+                            <option value="neutral">Neutral</option>
+                        </select>
+                    </div>
+
                 </div>
             </div>
 
@@ -81,5 +117,6 @@
 
     </div>
     <script src="script.js"></script>
+    <script src="tts.js"></script>
 </body>
 </html>
