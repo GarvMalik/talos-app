@@ -209,3 +209,37 @@ if (micButton && recognition) {
         alert("Voice recognition isn't supported in this browser. Try Chrome or Safari.");
     });
 }
+
+/* =========================================
+   03. CORE SEND LOGIC
+   ========================================= */
+
+function triggerEnding(userChoiceText) {
+    const chatHistory = document.getElementById('chatHistory');
+    
+    document.getElementById('choiceButtons').style.display = 'none';
+    chatHistory.innerHTML += `<div class="message user-message">${userChoiceText}</div>`;
+    
+    const aiText = "Thank you. I have all the information the doctor needs.";
+    
+    chatHistory.innerHTML += `
+        <div class="ai-message-row" style="margin-top: 12px;">
+            <div class="message system-message" style="margin-top: 0;">
+                <strong>Thank you.</strong> I have all the information the doctor needs.
+            </div>
+            <button class="btn-speaker" onclick="speakAIResponse('${aiText}')" title="Play Audio">
+                <span class="material-symbols-rounded">volume_up</span>
+            </button>
+        </div>
+    `;
+
+    document.getElementById('activeInputArea').style.display = 'none';
+    document.getElementById('reviewButton').style.display = 'flex';
+
+    setTimeout(() => {
+        if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 50);
+
+    // Attempt to auto-play the voice
+    speakAIResponse(aiText);
+}

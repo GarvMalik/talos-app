@@ -74,3 +74,8 @@ function speakAIResponse(text) {
 
 // Pre-load browser voices in the background
 window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+
+// 3. Stop Audio Manually
+function stopSpeaking() {
+    window.speechSynthesis.cancel();
+}
