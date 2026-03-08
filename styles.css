@@ -988,7 +988,7 @@ body.high-contrast .btn-outline-danger:hover {
 
 body.high-contrast .chat-input-wrapper,
 body.high-contrast .chat-input-wrapper::before {
-    background-color: #121212 !important;
+    background-color: transparent !important;
 }
 
 body.high-contrast .ai-message {
