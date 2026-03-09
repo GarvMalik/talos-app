@@ -115,36 +115,36 @@ function toggleSummary(headerElement) {
 }
 
 
-// ==========================================
-// Edge Swipe Navigation Logic
-// ==========================================
+// // ==========================================
+// // Edge Swipe Navigation Logic
+// // ==========================================
 
-let touchstartX = 0;
-let touchendX = 0;
+// let touchstartX = 0;
+// let touchendX = 0;
 
-document.addEventListener('touchstart', e => {
-    touchstartX = e.changedTouches[0].screenX;
-});
+// document.addEventListener('touchstart', e => {
+//     touchstartX = e.changedTouches[0].screenX;
+// });
 
-document.addEventListener('touchend', e => {
-    touchendX = e.changedTouches[0].screenX;
-    handleEdgeSwipe();
-});
+// document.addEventListener('touchend', e => {
+//     touchendX = e.changedTouches[0].screenX;
+//     handleEdgeSwipe();
+// });
 
-function handleEdgeSwipe() {
-    const swipeDistance = touchendX - touchstartX;
-    const screenWidth = window.innerWidth;
+// function handleEdgeSwipe() {
+//     const swipeDistance = touchendX - touchstartX;
+//     const screenWidth = window.innerWidth;
     
-    const edgeThreshold = 50; // Must start within 50px of the edge
-    const swipeLength = 75;   // Must swipe at least 75px across
+//     const edgeThreshold = 50; // Must start within 50px of the edge
+//     const swipeLength = 75;   // Must swipe at least 75px across
 
-    // Swipe Right (Go Back) 
-    if (swipeDistance > swipeLength && touchstartX < edgeThreshold) {
-        window.history.back();
-    }
+//     // Swipe Right (Go Back) 
+//     if (swipeDistance > swipeLength && touchstartX < edgeThreshold) {
+//         window.history.back();
+//     }
     
-    // Swipe Left (Go Forward)
-    if (swipeDistance < -swipeLength && touchstartX > (screenWidth - edgeThreshold)) {
-        window.history.forward();
-    }
-}
+//     // Swipe Left (Go Forward)
+//     if (swipeDistance < -swipeLength && touchstartX > (screenWidth - edgeThreshold)) {
+//         window.history.forward();
+//     }
+// }
