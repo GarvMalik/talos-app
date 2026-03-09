@@ -28,37 +28,14 @@
           </div>
       </main>
 
-      <div class="chat-input-wrapper" id="inputWrapper" style="display: none;">
+      <div class="chat-input-wrapper" id="inputWrapper">
         <div id="activeInputArea">
-          <div class="input-box">
-            <textarea id="chatInput" rows="1" placeholder="Type your answer..."></textarea>
-            <button class="btn-mic" id="micButton"><span class="material-symbols-rounded">mic</span></button>
-            <button class="btn-send" onclick="sendTypedMessage()">
-              <span class="material-symbols-rounded">arrow_upward</span>
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      <div style="padding: 0 24px 24px 24px;">
-        <button id="reviewButton" class="btn-primary" style="display: none; height: 60px; justify-content: center; border-radius: 30px; margin-bottom: 0;" onclick="navigateTo('review.html')">
-          <span style="font-size: 22px; font-weight: 600">Review My Summary</span>
-        </button>
-      </div>
-
-      <div class="chat-input-wrapper">
-        <div id="activeInputArea">
+          
           <div class="quick-replies">
-            <button
-              class="btn-quick-reply"
-              onclick="triggerEnding('Prefer not to answer')"
-            >
+            <button class="btn-quick-reply" onclick="sendOption('Prefer not to answer')">
               Prefer not to answer
             </button>
-            <button
-              class="btn-quick-reply"
-              onclick="triggerEnding('Skip this question')"
-            >
+            <button class="btn-quick-reply" onclick="sendOption('Skip this question')">
               Skip this question
             </button>
           </div>
@@ -69,29 +46,20 @@
             <button class="btn-send" onclick="sendTypedMessage()">
               <span class="material-symbols-rounded">arrow_upward</span>
             </button>
-            </div>
-        </div>
+          </div>
 
-        <button
-          id="reviewButton"
-          class="btn-primary"
-          style="
-            display: none;
-            height: 60px;
-            justify-content: center;
-            border-radius: 30px;
-            margin-bottom: 0;
-          "
-          onclick="navigateTo('review.html')"
-        >
-          <span style="font-size: 22px; font-weight: 600"
-            >Review My Summary</span
-          >
+        </div>
+      </div>
+      
+      <div style="padding: 0 24px 24px 24px;">
+        <button id="reviewButton" class="btn-primary" style="display: none; height: 60px; justify-content: center; border-radius: 30px; margin-bottom: 0;" onclick="navigateTo('review.html')">
+          <span style="font-size: 22px; font-weight: 600">Review My Summary</span>
         </button>
       </div>
-    </div>
 
-   <script src="script.js"></script>
+    </div> 
+    
+    <script src="script.js"></script>
     <script src="tts.js"></script>
     <script src="chat.js"></script>
   </body>

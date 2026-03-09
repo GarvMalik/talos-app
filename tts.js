@@ -33,28 +33,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 2. Speak AI Response (Bulletproof Version)
-function speakAIResponse(text) {
+// 2. Speak AI Response (With Dynamic Button States)
+function speakAIResponse(text, buttonId = null) {
     const isMuted = localStorage.getItem('silentMode') === 'true';
     if (isMuted) {
-        console.log("TTS blocked: Silent Mode is ON.");
         return; 
     }
 
     const synth = window.speechSynthesis;
-    synth.cancel(); 
+    synth.cancel(); // Stop any currently playing audio
+
+    // Reset ALL speaker buttons back to grey just to be safe
+    document.querySelectorAll('.active-speaker').forEach(btn => {
+        btn.classList.remove('active-speaker');
+    });
 
     const utterance = new SpeechSynthesisUtterance(text);
     
-    // Force max volume, normal speed, and normal pitch
     utterance.volume = 1;
-    utterance.rate = 1.0; // Changed from 0.85 to normal speed
-    utterance.pitch = 1.0; // Changed from 0.95 to normal pitch
+    utterance.rate = 1.0; 
+    utterance.pitch = 1.0; 
 
     const lang = localStorage.getItem('ttsLanguage') || 'en-US';
     utterance.lang = lang;
 
-    // Try to attach a specific voice, but don't fail if we can't find one
     let voices = synth.getVoices();
     if (voices.length > 0) {
         const voicePreference = localStorage.getItem('ttsVoiceType') || 'female';
@@ -64,15 +66,27 @@ function speakAIResponse(text) {
         if (selectedVoice) {
             utterance.voice = selectedVoice;
         } else if (langVoices.length > 0) {
-            utterance.voice = langVoices[0]; // Just grab the first available language voice
+            utterance.voice = langVoices[0]; 
         }
     }
 
-    // If the browser blocks it, tell us why!
-    utterance.onerror = function(event) {
-        console.error("Voice Error:", event);
-        alert("Voice failed to play. Error: " + event.error);
-    };
+    // If we passed a button ID, link the green/grey colors to the audio timing
+    if (buttonId) {
+        utterance.onstart = () => {
+            const btn = document.getElementById(buttonId);
+            if (btn) btn.classList.add('active-speaker'); // Turn Green
+        };
+        
+        utterance.onend = () => {
+            const btn = document.getElementById(buttonId);
+            if (btn) btn.classList.remove('active-speaker'); // Fade to Grey
+        };
+
+        utterance.onerror = (event) => {
+            const btn = document.getElementById(buttonId);
+            if (btn) btn.classList.remove('active-speaker'); // Fade to Grey on error
+        };
+    }
 
     synth.speak(utterance);
 }

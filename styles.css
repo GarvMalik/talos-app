@@ -812,6 +812,36 @@ body.high-contrast .btn-pill:hover {
     background-color: #5B9B43;
     color: #121212;
 }
+
+.btn-speaker {
+    background: transparent;
+    border: none;
+    color: #A0A0A0; /* Defaults to grey/inactive */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: color 0.3s ease, background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* This is the class the Javascript will add while speaking */
+.btn-speaker.active-speaker {
+    color: #386641; /* Turns green */
+}
+
+.btn-speaker:hover {
+    background-color: #EBF2EC;
+}
+
+/* High Contrast mode updates */
+body.high-contrast .btn-speaker {
+    color: #666 !important; 
+}
+body.high-contrast .btn-speaker.active-speaker {
+    color: #5B9B43 !important;
+}
 /* =========================================
    10. REVIEW & SUCCESS PAGES
    ========================================= */
