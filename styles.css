@@ -669,10 +669,10 @@ body.chat-layout .app-header::before {
     cursor: pointer;
     line-height: 1.2;
 }
-
+/* 
  .input-box {
     display: flex;
-    align-items: flex-end; /* Keeps the mic and send buttons at the bottom */
+    align-items: flex-end; 
     background-color: white;
     border-radius: 50px; 
     padding: 10px 10px 10px 20px;
@@ -694,9 +694,9 @@ body.chat-layout .app-header::before {
     font-size: 18px;
     background: transparent;
     color: #333;
-    resize: none; /* Hides the drag handle */
-    overflow-y: auto; /* Adds a scrollbar ONLY if it goes past 3 lines */
-    max-height: 80px; /* Limits the growth to roughly 3 lines */
+    resize: none; 
+    overflow-y: auto; 
+    max-height: 80px; 
     padding: 2px 0;
     line-height: 1.4;
     font-family: inherit;
@@ -704,8 +704,41 @@ body.chat-layout .app-header::before {
 
 .input-box textarea::placeholder {
     color: #999;
+} */
+
+.input-box {
+    display: flex;
+    align-items: flex-end; 
+    background-color: white;
+    border-radius: 33px; /* Changed from 50px so tall boxes look better */
+    padding: 10px 10px 10px 20px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease;
 }
 
+#chatInput {
+    margin: 0; /* Removed 'auto' to fix alignment */
+    margin-bottom: 6px; /* Nudges the bottom line of text to align with the mic */
+}
+
+.input-box:focus-within {
+    border-color: #386641;
+}
+
+.input-box textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    background: transparent;
+    color: #333;
+    resize: none; 
+    overflow-y: auto; 
+    max-height: 130px; /* Increased from 80px to fit exactly 5 lines */
+    padding: 2px 0;
+    line-height: 1.4;
+    font-family: inherit;
+}
 .btn-mic {
     background: transparent;
     border: none;

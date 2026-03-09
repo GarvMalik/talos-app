@@ -2,7 +2,7 @@
    01. APP CONFIGURATION
    ========================================= */
 // Paste your Gemini API key right here inside the quotes
-const GEMINI_API_KEY = "AIzaSyDlJH8F2_UUw20NDQ_kIuCr15b-ssK9Ypw";
+const GEMINI_API_KEY = "PASTE_YOUR_API_KEY_HERE";
 
 /* =========================================
    02. UI & LAYOUT LOGIC
@@ -187,7 +187,6 @@ async function fetchGeminiResponse() {
    ========================================= */
 let isRecording = false;
 let silenceTimer = null; 
-let isSecondInputSession = false; 
 let previousText = "";
 let recognition = null;
 
@@ -200,26 +199,21 @@ if (SpeechRecognition) {
 
 function resetSilenceTimer() {
     if (silenceTimer) clearTimeout(silenceTimer);
-    if (!isSecondInputSession) {
-        if (chatInput) chatInput.placeholder = "Listening... (Will send after 5s of silence)";
-        silenceTimer = setTimeout(() => {
-            stopRecording();
-            sendTypedMessage();
-        }, 5000); 
-    } else {
-        if (chatInput && isRecording) chatInput.placeholder = "Listening... (Manual send required)";
-    }
+    
+    // Keep the text simple and human
+    if (chatInput) chatInput.placeholder = "Listening...";
+    
+    silenceTimer = setTimeout(() => {
+        stopRecording();
+        sendTypedMessage();
+    }, 5000); 
 }
 
 function cancelSilenceTimer() {
-    if (silenceTimer) {
-        clearTimeout(silenceTimer);
-        silenceTimer = null;
-    }
-    isSecondInputSession = true; 
-    if (chatInput && !isRecording) {
-        chatInput.placeholder = "Editing... (Manual send required)";
-    }
+    if (silenceTimer) clearTimeout(silenceTimer);
+    
+    // Revert to the standard typing prompt
+    if (chatInput) chatInput.placeholder = "Type your answer...";
 }
 
 function stopRecording() {
@@ -255,7 +249,6 @@ if (micButton && recognition) {
             navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
                 window.localStream = stream;
                 previousText = chatInput.value.trim();
-                if (previousText !== "") isSecondInputSession = true;
                 recognition.start();
             }).catch(err => console.error("Mic access denied:", err));
         } else {
@@ -287,11 +280,8 @@ if (micButton && recognition) {
         if (window.localStream) {
             window.localStream.getTracks().forEach(t => t.stop());
         }
-        if (!isSecondInputSession && chatInput.value.trim() === '') {
-            chatInput.placeholder = "Type your answer...";
-        } else if (isSecondInputSession) {
-            chatInput.placeholder = "Finished. Press send when ready.";
-        }
+        // Always go back to the default text when the mic turns off
+        if (chatInput) chatInput.placeholder = "Type your answer...";
     };
 } else if (micButton) {
     micButton.addEventListener('click', () => {
