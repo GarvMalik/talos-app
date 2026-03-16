@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Talos Care - Settings</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0" />
 </head>
 <body>
-
     <div class="mobile-container">
-        
         <header class="app-header">
-            <button class="back-btn" onclick="navigateTo('index.html')">
+            <button class="back-btn" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
             <h1>Settings</h1>
-            <div class="spacer"></div> </header>
+            <div class="spacer"></div> 
+        </header>
 
        <main>
             <div class="settings-group">
@@ -25,47 +24,25 @@
                     <div class="settings-row">
                         <span>Text Size</span>
                         <div class="size-selector">
-                            <span id="textSizeS" onclick="changeTextSize('S')">S</span>
-                            <span id="textSizeM" class="active" onclick="changeTextSize('M')">M</span>
-                            <span id="textSizeL" onclick="changeTextSize('L')">L</span>
+                            <span id="textSizeS" data-size="S">S</span>
+                            <span id="textSizeM" class="active" data-size="M">M</span>
+                            <span id="textSizeL" data-size="L">L</span>
                         </div>
                     </div>
                     <div class="settings-divider"></div>
-
                     <div class="settings-row">
                         <span>High Contrast Mode</span>
                         <label class="toggle-switch">
-                            <input type="checkbox" id="contrastToggle" onchange="toggleContrast(this.checked)">
+                            <input type="checkbox" id="contrastToggle">
                             <span class="slider"></span>
                         </label>
                     </div>
                 </div>
             </div>
 
-            <!-- <div class="settings-group">
-                <h3 class="settings-title">Interaction Preferences</h3>
-                <div class="settings-card">
-                    <div class="settings-row">
-                        <span>Silent Mode</span>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="silentToggle" onchange="toggleSilentMode(this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                    <div class="settings-divider"></div>
-                    <div class="settings-row">
-                        <span>Voice Selection</span>
-                        <div class="voice-selector">
-                            <span class="material-symbols-rounded">expand_more</span>
-                            <span>Neutral</span>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
             <div class="settings-group">
                 <h3 class="settings-title">Voice & Interaction</h3>
                 <div class="settings-card">
-                    
                     <div class="settings-row">
                         <span>Silent Mode (Mute AI)</span>
                         <label class="toggle-switch">
@@ -73,9 +50,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
                     <div class="settings-divider"></div>
-                    
                     <div class="settings-row">
                         <span>Spoken Language</span>
                         <select id="languageSelect" class="settings-dropdown">
@@ -84,9 +59,7 @@
                             <option value="sv-SE">Swedish</option>
                         </select>
                     </div>
-                    
                     <div class="settings-divider"></div>
-                    
                     <div class="settings-row">
                         <span>Voice Type</span>
                         <select id="voiceTypeSelect" class="settings-dropdown">
@@ -95,13 +68,12 @@
                             <option value="neutral">Neutral</option>
                         </select>
                     </div>
-                     <div class="settings-divider"></div>
-                    <div class="settings-row" style="justify-content: center; margin-top: 10px;">
-    <button class="btn-action-light btn-green-text" style="width: 100%; border-radius: 20px; padding: 12px;" onclick="speakAIResponse('Testing the voice engine. Can you hear me?')">
-        Test Voice Output
-    </button>
-</div>
-
+                    <div class="settings-divider"></div>
+                    <div class="settings-row justify-center mt-10">
+                        <button class="btn-action-light btn-green-text w-full-padded" id="btnTestVoice">
+                            Test Voice Output
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -110,20 +82,21 @@
                 <div class="settings-card">
                     <div class="settings-row">
                         <span>Consent Agreement</span>
-                        <button class="btn-icon-green" onclick="alert('Consent Agreement Modal would open here.')">
+                        <button class="btn-icon-green" id="btnConsent">
                             <span class="material-symbols-rounded">link</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <button class="btn-delete" onclick="deleteLocalData()">
+            <button class="btn-delete" id="btnDeleteLocalData">
                 Delete Local Data
             </button>
         </main>
-
     </div>
-    <script src="script.js"></script>
-    <script src="tts.js"></script>
+
+    <script src="../js/global.js"></script>
+    <script src="../js/tts.js"></script>
+    <script src="../js/settings.js"></script>
 </body>
 </html>

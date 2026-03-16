@@ -8,13 +8,11 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0" />
 </head>
 <body>
-
     <div class="mobile-container">
-        
         <header class="app-header">
             <div class="spacer"></div>
             <h1>Talos Care</h1>
-            <button class="settings-btn" onclick="navigateTo('settings.html')">
+            <button class="settings-btn" data-navigate="html/settings.html">
                 <span class="material-symbols-rounded">settings</span>
             </button>
         </header>
@@ -25,7 +23,7 @@
                 <p>How Can Talos Assist You Today?</p>
             </div>
 
-            <button class="btn-primary" onclick="navigateTo('chat.html')">
+            <button class="btn-primary" data-navigate="html/chat.html">
                 <div class="btn-text">
                     <h3>Start Screening</h3>
                     <p>Takes about 3-5 minutes.</p>
@@ -34,20 +32,19 @@
             </button>
 
             <div class="secondary-actions">
-                <button class="btn-secondary btn-past" onclick="navigateTo('past-summaries.html')">
+                <button class="btn-secondary btn-past" data-navigate="html/past-summaries.html">
                     <span class="material-symbols-rounded">history</span>
                     <h3>Past<br>Summaries</h3>
                 </button>
 
-                <button class="btn-secondary btn-emergency" onclick="navigateTo('emergency.html')">
+                <button class="btn-secondary btn-emergency" data-navigate="html/emergency.html">
                     <span class="material-symbols-rounded">emergency</span>
                     <h3>Emergency<br>Protocols</h3>
                 </button>
             </div>
         </main>
-
     </div>
 
-    <script src="script.js"></script>
+  <script src="js/global.js"></script>
 </body>
 </html>
