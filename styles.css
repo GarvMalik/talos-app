@@ -220,7 +220,7 @@ body {
 .support-card h3 { font-size: 20px; font-weight: 600; color: #333; }
 .support-card p { font-size: 20px; color: #555; line-height: 1.4; margin-bottom: 12px; }
 .btn-card-action { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; background-color: #555; color: #fff; border: none; border-radius: 16px; padding: 18px; font-size: 22px; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease; }
-.btn-card-action:hover { background-color: #92a094; }
+.btn-card-action:hover { background-color: #386641; }
 
 /* =========================================
    07. SETTINGS PAGE
