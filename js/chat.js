@@ -16,7 +16,7 @@ if (!GROQ_API_KEY) {
 }
 let conversationHistory = [];
 
-const SYSTEM_PROMPT = ``You are Talos, a specialised Mental Health Pre-screening assistant. 
+const SYSTEM_PROMPT = `You are Talos, a specialised Mental Health Pre-screening assistant. 
 Your goal is to gather initial context about a patient's emotional and psychological well-being before they speak with a therapist or counsellor.
 
 CRITICAL BEHAVIOR RULES:
@@ -61,7 +61,7 @@ INTERACTION FLOW:
 
 STRICT OUTPUT FORMAT:
 You must return your response ONLY as a valid JSON object:
-{"message": "Response here.", "options": ["Option 1", "Option 2"]}`;`;
+{"message": "Response here.", "options": ["Option 1", "Option 2"]}`;
 
 document.addEventListener('DOMContentLoaded', () => {
     const chatHistory = document.getElementById('chatHistory');
