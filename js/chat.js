@@ -1,34 +1,3 @@
-/* =========================================
-   CHAT.JS — AI BRAIN + VOICE-TO-VOICE ENGINE
-
-   BUGS FIXED IN THIS VERSION:
-   
-   BUG 1 — Silent mode leaks after exiting voice chat.
-   Root cause: fetchGroqResponse received `continueVoiceLoop` as its audio
-   decision signal. When voice mode ended mid-flight (e.g. user exits while
-   AI response was in-flight), continueVoiceLoop was still `true` inside
-   that call, so it called speakAndWait() instead of the silent-mode-
-   respecting speakAIResponse(). Fix: audio decisions now read _isVoiceMode
-   at call-time, not from the captured closure argument.
-
-   BUG 2 — Option pills disappear after switching back from voice mode.
-   Root cause: Option rendering was guarded by `if (!continueVoiceLoop)`.
-   After exiting voice mode, subsequent normal-chat calls still had
-   continueVoiceLoop=false — so this wasn't the problem there. The real
-   issue was that clearDynamicButtons() inside _transcribe() wiped any
-   existing pill container BEFORE the new response arrived, and since the
-   voice→text switch left _isVoiceMode=false but a stale continueVoiceLoop
-   value persisted in the in-flight fetch closure. Fix: option rendering now
-   checks _isVoiceMode at render-time, not the closure value.
-
-   BUG 3 — Browser asks for mic permission on every utterance.
-   Root cause: _startRecording() called getUserMedia() on every invocation
-   and then called stream.getTracks().forEach(t => t.stop()) in onstop,
-   fully releasing the stream. Each new recording required a fresh permission
-   grant. Fix: stream is acquired once and cached in _cachedStream. Tracks
-   are only stopped when voice mode is fully exited. MediaRecorder is
-   re-created per utterance (required by the API) but reuses the live stream.
-   ========================================= */
 
 let GROQ_API_KEY = localStorage.getItem('talosApiKey');
 if (!GROQ_API_KEY) {
@@ -45,7 +14,6 @@ let conversationHistory = [];
 
 const SYSTEM_PROMPT = `You are Talos, a conversational AI designed for pre-clinical health pre-screening. 
 Your primary role is to gather basic health information and symptoms before the patient meets with a human healthcare professional.
->>>>>>> f11da03 (new upadtes)
 CRITICAL BEHAVIOR RULES:
 1. Single Focus: Ask exactly ONE question at a time.
 2. Zero Diagnosis: Do not label conditions. Focus on symptoms, feelings, and intensity.
