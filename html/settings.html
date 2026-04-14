@@ -14,24 +14,25 @@
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
             <h1>Settings</h1>
-            <div class="spacer"></div> 
+            <div class="spacer"></div>
         </header>
 
-       <main>
+        <main>
+
             <div class="settings-group">
-                <h3 class="settings-title">Accessibility Controls</h3>
+                <h3 class="settings-title">Display</h3>
                 <div class="settings-card">
                     <div class="settings-row">
                         <span>Text Size</span>
                         <div class="size-selector">
-                            <span id="textSizeS" data-size="S">S</span>
-                            <span id="textSizeM" class="active" data-size="M">M</span>
-                            <span id="textSizeL" data-size="L">L</span>
+                            <span data-size="S">S</span>
+                            <span class="active" data-size="M">M</span>
+                            <span data-size="L">L</span>
                         </div>
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row">
-                        <span>High Contrast Mode</span>
+                        <span>High Contrast</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="contrastToggle">
                             <span class="slider"></span>
@@ -41,10 +42,10 @@
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Voice & Interaction</h3>
+                <h3 class="settings-title">Voice</h3>
                 <div class="settings-card">
                     <div class="settings-row">
-                        <span>Silent Mode (Mute AI)</span>
+                        <span>Mute AI Voice</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="silentModeToggle">
                             <span class="slider"></span>
@@ -52,7 +53,7 @@
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row">
-                        <span>Spoken Language</span>
+                        <span>Language</span>
                         <select id="languageSelect" class="settings-dropdown">
                             <option value="en-US">English</option>
                             <option value="fi-FI">Finnish</option>
@@ -61,24 +62,32 @@
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row">
-                        <span>Voice Type</span>
+                        <span>Voice</span>
                         <select id="voiceTypeSelect" class="settings-dropdown">
-                            <option value="female">Female</option>
-                            <option value="male">Male</option>
-                            <option value="neutral">Neutral</option>
+                            <option value="female">Sarah (F)</option>
+                            <option value="male">Liam (M)</option>
+                            <option value="neutral">Bill (N)</option>
                         </select>
                     </div>
                     <div class="settings-divider"></div>
-                    <div class="settings-row justify-center mt-10">
+                    <div class="settings-row settings-row-column">
+                        <div class="settings-key-header">
+                            <span>ElevenLabs Key</span>
+                            <span class="settings-badge">High quality</span>
+                        </div>
+                        <input type="password" id="elevenLabsKeyInput" class="settings-key-input" placeholder="Paste API key for natural voice" autocomplete="off">
+                    </div>
+                    <div class="settings-divider"></div>
+                    <div class="settings-row justify-center">
                         <button class="btn-action-light btn-green-text w-full-padded" id="btnTestVoice">
-                            Test Voice Output
+                            Test Voice
                         </button>
                     </div>
                 </div>
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Privacy & Data</h3>
+                <h3 class="settings-title">Privacy</h3>
                 <div class="settings-card">
                     <div class="settings-row">
                         <span>Consent Agreement</span>
@@ -89,9 +98,8 @@
                 </div>
             </div>
 
-            <button class="btn-delete" id="btnDeleteLocalData">
-                Delete Local Data
-            </button>
+            <button class="btn-delete" id="btnDeleteLocalData">Delete All Data</button>
+
         </main>
     </div>
 

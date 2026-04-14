@@ -9,32 +9,37 @@
 </head>
 <body class="chat-layout">
     <div class="mobile-container">
+
         <header class="app-header">
             <button class="back-btn" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
             <h1 class="flex-center-gap">
-                Talos Assistant
+                Talos
                 <span class="material-symbols-rounded icon-lock">lock</span>
             </h1>
-            <div class="spacer"></div>
+            <button id="voiceModeBtn" class="voice-mode-btn" title="Voice conversation mode">
+                <span class="material-symbols-rounded">graphic_eq</span>
+            </button>
         </header>
 
+        <!-- Text chat area -->
         <main class="chat-area" id="chatContainer">
-            <div class="chat-history" id="chatHistory">
-                </div>
+            <div class="chat-history" id="chatHistory"></div>
         </main>
 
+        <!-- Text input -->
         <div class="chat-input-wrapper" id="inputWrapper">
             <div id="activeInputArea">
                 <div class="quick-replies">
                     <button class="btn-quick-reply" data-quick-reply="Prefer not to answer">Prefer not to answer</button>
                     <button class="btn-quick-reply" data-quick-reply="Skip this question">Skip this question</button>
                 </div>
-
                 <div class="input-box">
                     <textarea id="chatInput" rows="1" placeholder="Type your answer..."></textarea>
-                    <button class="btn-mic" id="micButton"><span class="material-symbols-rounded">mic</span></button>
+                    <button class="btn-mic" id="micButton" title="Voice input">
+                        <span class="material-symbols-rounded">mic</span>
+                    </button>
                     <button class="btn-send" id="sendBtn">
                         <span class="material-symbols-rounded">arrow_upward</span>
                     </button>
@@ -42,11 +47,54 @@
             </div>
         </div>
 
+        <!-- Review button (hidden until complete) -->
         <button id="reviewButton" class="btn-primary w-full-btn mb-24 hidden" data-navigate="review.html">
             <span class="text-large font-bold">Review My Summary</span>
         </button>
-    </div> 
-    
+
+    </div>
+
+    <!-- =====================================================
+         VOICE ORB OVERLAY
+         Full-screen voice-to-voice interface.
+         Hidden by default, shown when voice mode is active.
+         ===================================================== -->
+    <div id="voiceOrb" class="voice-orb-screen hidden">
+
+        <!-- Top: AI response text -->
+        <div class="orb-response-area">
+            <p id="orbResponse" class="orb-response-text"></p>
+        </div>
+
+        <!-- Center: The orb -->
+        <div class="orb-center">
+            <div class="orb-container" id="orbContainer">
+                <!-- Outer ripple rings (state-driven) -->
+                <div class="orb-ring orb-ring-3"></div>
+                <div class="orb-ring orb-ring-2"></div>
+                <div class="orb-ring orb-ring-1"></div>
+                <!-- Core orb -->
+                <div class="orb-core">
+                    <div class="orb-inner"></div>
+                </div>
+            </div>
+            <p id="orbStateLabel" class="orb-state-label">Listening...</p>
+        </div>
+
+        <!-- Bottom: User transcript -->
+        <div class="orb-transcript-area">
+            <p id="orbTranscript" class="orb-transcript-text"></p>
+        </div>
+
+        <!-- Controls -->
+        <div class="orb-controls">
+            <button class="orb-close-btn" id="orbCloseBtn" onclick="document.getElementById('voiceModeBtn').click()">
+                <span class="material-symbols-rounded">close</span>
+            </button>
+        </div>
+
+    </div>
+
     <script src="../js/global.js"></script>
     <script src="../js/tts.js"></script>
     <script src="../js/chat.js"></script>

@@ -1,37 +1,31 @@
 /* =========================================
    GLOBAL LOGIC (Navigation, Theme, Setup)
+   UPDATED: Silent mode now defaults to ON for new users
    ========================================= */
 
-// 1. Navigation System (Replaces old onclick='navigateTo()')
+// 1. Navigation System
 function navigateTo(url) {
     document.body.classList.add('fade-out');
-    setTimeout(() => {
-        window.location.href = url;
-    }, 300);
+    setTimeout(() => { window.location.href = url; }, 300);
 }
 
 document.addEventListener('click', (e) => {
     const navTarget = e.target.closest('[data-navigate]');
-    if (navTarget) {
-        navigateTo(navTarget.dataset.navigate);
-    }
+    if (navTarget) navigateTo(navTarget.dataset.navigate);
 });
 
 // 2. Global Accessibility Settings
 function applySavedSettings() {
     const isHighContrast = (localStorage.getItem('highContrast') === 'true');
-    if (isHighContrast) {
-        document.body.classList.add('high-contrast');
-    } else {
-        document.body.classList.remove('high-contrast');
-    }
+    if (isHighContrast) document.body.classList.add('high-contrast');
+    else document.body.classList.remove('high-contrast');
 
     const textSize = localStorage.getItem('textSize') || 'M';
     document.body.classList.remove('text-size-S', 'text-size-M', 'text-size-L');
     document.body.classList.add('text-size-' + textSize);
 }
 
-// 3. Dynamic Greeting (For index.html)
+// 3. Dynamic Greeting
 function updateGreeting() {
     const hour = new Date().getHours();
     const greetingElement = document.getElementById('greetingText');
@@ -51,9 +45,17 @@ window.addEventListener('scroll', function() {
     }
 });
 
+// 5. Set silent mode ON for first-time users (new default)
+function initDefaultSettings() {
+    if (localStorage.getItem('silentMode') === null) {
+        localStorage.setItem('silentMode', 'true');
+    }
+}
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
+    initDefaultSettings();
     applySavedSettings();
     updateGreeting();
-    window.dispatchEvent(new Event('scroll')); // Trigger initial header state
+    window.dispatchEvent(new Event('scroll'));
 });

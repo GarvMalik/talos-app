@@ -438,3 +438,523 @@ body.high-contrast .modal-btn-outline {
     border-color: #555 !important; 
     color: #FFFFFF !important; 
 }
+
+/* =========================================
+   14. VOICE UI — NEW ADDITIONS
+   =========================================
+   Voice Mode Button (header, replaces spacer on right)
+   Mic button states: idle, recording, processing
+   Voice overlay with waveform animation
+   Speaker button improvements
+   ========================================= */
+
+/* -- Voice Mode Toggle Button -- */
+.voice-mode-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.voice-mode-btn .material-symbols-rounded { font-size: 28px; }
+.voice-mode-btn:hover { background-color: rgba(56, 102, 65, 0.1); color: #386641; }
+.voice-mode-btn.voice-mode-active {
+    background-color: #386641;
+    color: white;
+    box-shadow: 0 0 0 4px rgba(56, 102, 65, 0.2);
+}
+
+/* -- Mic button upgraded states -- */
+.btn-mic {
+    background: transparent;
+    border: none;
+    color: #666;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+.btn-mic .material-symbols-rounded { font-size: 26px; }
+.btn-mic:hover { color: #386641; background-color: rgba(56, 102, 65, 0.08); }
+
+/* Recording state: pulsing red ring */
+.btn-mic.recording {
+    color: #BC4749 !important;
+    background-color: rgba(188, 71, 73, 0.1);
+    animation: pulse-mic 1.5s infinite;
+}
+
+/* Processing state: spinning animation */
+.btn-mic.processing {
+    color: #F0A500 !important;
+    animation: spin-mic 1.2s linear infinite;
+}
+
+@keyframes pulse-mic {
+    0%   { box-shadow: 0 0 0 0 rgba(188, 71, 73, 0.5); }
+    70%  { box-shadow: 0 0 0 14px rgba(188, 71, 73, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(188, 71, 73, 0); }
+}
+@keyframes spin-mic {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* -- Voice Overlay (shown during voice-to-voice mode) -- */
+.voice-overlay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 28px 24px;
+    background: rgba(248, 243, 230, 0.97);
+    border-radius: 24px 24px 0 0;
+    backdrop-filter: blur(8px);
+}
+
+/* -- Animated Waveform Bars -- */
+.voice-waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 52px;
+}
+
+.voice-waveform .bar {
+    display: inline-block;
+    width: 5px;
+    height: 8px;
+    background-color: #C8D8CA;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* When recording, bars animate with staggered heights */
+.voice-waveform.active .bar {
+    background-color: #386641;
+    animation: wave-bar 1.2s ease-in-out infinite;
+}
+.voice-waveform.active .bar:nth-child(1) { animation-delay: 0.0s; }
+.voice-waveform.active .bar:nth-child(2) { animation-delay: 0.1s; }
+.voice-waveform.active .bar:nth-child(3) { animation-delay: 0.2s; }
+.voice-waveform.active .bar:nth-child(4) { animation-delay: 0.3s; }
+.voice-waveform.active .bar:nth-child(5) { animation-delay: 0.2s; }
+.voice-waveform.active .bar:nth-child(6) { animation-delay: 0.1s; }
+.voice-waveform.active .bar:nth-child(7) { animation-delay: 0.05s; }
+.voice-waveform.active .bar:nth-child(8) { animation-delay: 0.0s; }
+
+@keyframes wave-bar {
+    0%, 100% { transform: scaleY(1);   opacity: 0.7; }
+    50%       { transform: scaleY(5.5); opacity: 1.0; }
+}
+
+.voice-state-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #386641;
+    letter-spacing: 0.01em;
+}
+
+.btn-exit-voice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1.5px solid #CCC;
+    color: #666;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btn-exit-voice:hover { border-color: #BC4749; color: #BC4749; }
+.btn-exit-voice .material-symbols-rounded { font-size: 20px; }
+
+/* -- Speaker Button Improvements -- */
+.btn-speaker {
+    background: transparent;
+    border: none;
+    color: #C0C0C0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: color 0.25s ease, background-color 0.2s ease, transform 0.1s ease;
+    flex-shrink: 0;
+}
+.btn-speaker:hover { background-color: #EBF2EC; color: #386641; }
+.btn-speaker.active-speaker {
+    color: #386641;
+    background-color: rgba(56, 102, 65, 0.1);
+    animation: speaker-pulse 2s ease-in-out infinite;
+}
+@keyframes speaker-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(56, 102, 65, 0.3); }
+    50%       { box-shadow: 0 0 0 8px rgba(56, 102, 65, 0); }
+}
+
+/* -- Settings page additions -- */
+.settings-row-column {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+.settings-key-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+.settings-badge {
+    background-color: #EBF2EC;
+    color: #386641;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+.settings-sub {
+    font-size: 14px !important;
+    color: #888 !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+}
+.settings-key-input {
+    width: 100%;
+    background-color: #F8F3E6;
+    border: 1.5px solid #E8DCC4;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #333;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.settings-key-input:focus { border-color: #386641; }
+.settings-key-input::placeholder { color: #AAA; }
+
+/* -- High Contrast overrides for new elements -- */
+body.high-contrast .voice-mode-btn { color: #CCCCCC; }
+body.high-contrast .voice-mode-btn.voice-mode-active { background-color: #4A8446; }
+body.high-contrast .voice-overlay { background: rgba(18, 18, 18, 0.97); }
+body.high-contrast .voice-waveform .bar { background-color: #444; }
+body.high-contrast .voice-waveform.active .bar { background-color: #5B9B43; }
+body.high-contrast .voice-state-label { color: #5B9B43; }
+body.high-contrast .settings-key-input { background-color: #1E1E1E; border-color: #444; color: #FFFFFF; }
+body.high-contrast .settings-badge { background-color: #1A2E1C; color: #5B9B43; }
+body.high-contrast .settings-sub { color: #777 !important; }
+
+/* =========================================
+   15. VOICE ORB — Full-screen voice mode UI
+   Design: minimal, premium, ChatGPT-voice-inspired but distinct.
+   Central animated orb with breathing/listening/speaking states.
+   State is driven by data-state attribute on #voiceOrb.
+   ========================================= */
+
+/* ---- Full-screen overlay ---- */
+.voice-orb-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: #F8F3E6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 32px 48px;
+    animation: orbFadeIn 0.35s ease forwards;
+}
+
+.voice-orb-screen.hidden {
+    display: none;
+}
+
+@keyframes orbFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---- Top: AI response text ---- */
+.orb-response-area {
+    width: 100%;
+    max-width: 480px;
+    min-height: 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.orb-response-text {
+    font-size: 20px;
+    line-height: 1.55;
+    color: #333;
+    text-align: center;
+    font-weight: 500;
+    transition: opacity 0.4s ease;
+}
+
+/* ---- Center: Orb ---- */
+.orb-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+}
+
+.orb-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ripple rings — shown in listening/speaking state */
+.orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid rgba(56, 102, 65, 0.15);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.orb-ring-1 { width: 120px; height: 120px; }
+.orb-ring-2 { width: 148px; height: 148px; }
+.orb-ring-3 { width: 176px; height: 176px; }
+
+/* Core orb */
+.orb-core {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #386641;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+    box-shadow: 0 8px 32px rgba(56, 102, 65, 0.25);
+}
+
+.orb-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* ---- STATE: idle — gentle breathing ---- */
+#voiceOrb[data-state="idle"] .orb-core {
+    animation: orbBreathe 3.5s ease-in-out infinite;
+}
+#voiceOrb[data-state="idle"] .orb-ring { opacity: 0; }
+
+@keyframes orbBreathe {
+    0%, 100% { transform: scale(1);    box-shadow: 0 8px 32px rgba(56,102,65,0.22); }
+    50%       { transform: scale(1.07); box-shadow: 0 12px 44px rgba(56,102,65,0.35); }
+}
+
+/* ---- STATE: listening — pulse rings, faster orb ---- */
+#voiceOrb[data-state="listening"] .orb-core {
+    background: #2e5535;
+    box-shadow: 0 8px 40px rgba(56,102,65,0.4);
+    animation: orbListenPulse 1.4s ease-in-out infinite;
+}
+#voiceOrb[data-state="listening"] .orb-ring-1 {
+    opacity: 1;
+    animation: ringPulse 1.4s ease-out infinite 0s;
+}
+#voiceOrb[data-state="listening"] .orb-ring-2 {
+    opacity: 1;
+    animation: ringPulse 1.4s ease-out infinite 0.28s;
+}
+#voiceOrb[data-state="listening"] .orb-ring-3 {
+    opacity: 1;
+    animation: ringPulse 1.4s ease-out infinite 0.56s;
+}
+
+@keyframes orbListenPulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.06); }
+}
+
+@keyframes ringPulse {
+    0%   { transform: scale(0.85); opacity: 0.5; }
+    80%  { transform: scale(1.1);  opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* ---- STATE: processing — spin inner dot ---- */
+#voiceOrb[data-state="processing"] .orb-core {
+    background: #5a7a3a;
+    animation: none;
+    /* Must be relative so the absolutely-positioned dot is anchored to this circle */
+    position: relative;
+    overflow: visible;
+}
+#voiceOrb[data-state="processing"] .orb-inner {
+    /* Take the dot out of flow and center it on the orb's midpoint */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;   /* shift back by half its own size to truly center */
+    border-radius: 50%;
+    background: rgba(255,255,255,0.75);
+    /*
+     * Correct orbit transform order:
+     * 1. rotate()     — spins the coordinate system around the orb center
+     * 2. translateX() — moves the dot outward along the now-rotated X axis
+     * transform-origin must stay "center" (default) so rotation pivots on
+     * the dot's own center, which is already placed at the orb center.
+     */
+    transform-origin: center;
+    animation: orbSpinDot 1s linear infinite;
+    transition: none;
+}
+#voiceOrb[data-state="processing"] .orb-ring { opacity: 0; }
+
+@keyframes orbSpinDot {
+    from { transform: rotate(0deg)   translateX(28px); }
+    to   { transform: rotate(360deg) translateX(28px); }
+}
+
+/* ---- STATE: speaking — warm color, wave rings ---- */
+#voiceOrb[data-state="speaking"] .orb-core {
+    background: #386641;
+    animation: orbSpeakWave 0.8s ease-in-out infinite;
+}
+#voiceOrb[data-state="speaking"] .orb-ring-1 {
+    opacity: 1;
+    border-color: rgba(56,102,65,0.3);
+    animation: ringWave 0.8s ease-out infinite 0s;
+}
+#voiceOrb[data-state="speaking"] .orb-ring-2 {
+    opacity: 1;
+    border-color: rgba(56,102,65,0.2);
+    animation: ringWave 0.8s ease-out infinite 0.16s;
+}
+#voiceOrb[data-state="speaking"] .orb-ring-3 {
+    opacity: 1;
+    border-color: rgba(56,102,65,0.12);
+    animation: ringWave 0.8s ease-out infinite 0.32s;
+}
+
+@keyframes orbSpeakWave {
+    0%, 100% { transform: scale(1); }
+    33%       { transform: scale(1.08); }
+    66%       { transform: scale(0.97); }
+}
+
+@keyframes ringWave {
+    0%   { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* ---- State label ---- */
+.orb-state-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #386641;
+    letter-spacing: 0.03em;
+    min-height: 24px;
+    transition: opacity 0.3s ease;
+}
+
+/* ---- Bottom: transcript ---- */
+.orb-transcript-area {
+    width: 100%;
+    max-width: 480px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orb-transcript-text {
+    font-size: 17px;
+    color: #888;
+    text-align: center;
+    font-style: italic;
+    line-height: 1.5;
+    transition: opacity 0.3s ease;
+}
+
+/* ---- Controls ---- */
+.orb-controls {
+    display: flex;
+    justify-content: center;
+}
+
+.orb-close-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.07);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    color: #555;
+}
+.orb-close-btn:hover { background: rgba(0,0,0,0.12); }
+.orb-close-btn:active { transform: scale(0.95); }
+.orb-close-btn .material-symbols-rounded { font-size: 26px; }
+
+/* ---- Voice mode header button (updated icon) ---- */
+.voice-mode-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+.voice-mode-btn .material-symbols-rounded { font-size: 28px; }
+.voice-mode-btn:hover { background: rgba(56,102,65,0.1); color: #386641; }
+.voice-mode-btn.voice-mode-active {
+    background: #386641;
+    color: white;
+    box-shadow: 0 0 0 4px rgba(56,102,65,0.18);
+}
+
+/* ---- High contrast overrides ---- */
+body.high-contrast .voice-orb-screen {
+    background: #121212;
+}
+body.high-contrast .orb-response-text { color: #E8E8E8; }
+body.high-contrast .orb-transcript-text { color: #777; }
+body.high-contrast .orb-state-label { color: #5B9B43; }
+body.high-contrast .orb-core { background: #2a6032; }
+body.high-contrast .orb-close-btn { background: rgba(255,255,255,0.08); color: #CCC; }
+body.high-contrast .voice-mode-btn { color: #CCC; }
+body.high-contrast .voice-mode-btn.voice-mode-active { background: #2a6032; }
