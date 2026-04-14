@@ -658,7 +658,9 @@ body.high-contrast .voice-waveform .bar { background-color: #444; }
 body.high-contrast .voice-waveform.active .bar { background-color: #5B9B43; }
 body.high-contrast .voice-state-label { color: #5B9B43; }
 body.high-contrast .settings-key-input { background-color: #1E1E1E; border-color: #444; color: #FFFFFF; }
+body.high-contrast .settings-key-header { color: #CCCCCC; }
 body.high-contrast .settings-badge { background-color: #1A2E1C; color: #5B9B43; }
+
 body.high-contrast .settings-sub { color: #777 !important; }
 
 /* =========================================
