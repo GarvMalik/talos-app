@@ -513,14 +513,19 @@ async function fetchGroqResponse() {
         `When done, say "Thank you. I have all the information" in ${targetLang}.`;
 
     try {
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'llama-4-scout',
-                messages: [{ role: 'system', content: prompt }, ...conversationHistory],
-                response_format: { type: 'json_object' }
-            })
+       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+        // Notice we are using standard string concatenation here to avoid template literal errors
+        "Authorization": "Bearer " + GROQ_API_KEY, 
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        // The official Groq API string for Llama 4 Scout
+        model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+        messages: chatHistory,
+        response_format: { type: "json_object" }
+    })
         });
 
         const data = await res.json();
