@@ -10,6 +10,7 @@ if (!GROQ_API_KEY) {
     }
 }
 
+
 let conversationHistory = [];
 
 const SYSTEM_PROMPT = `You are Talos, a conversational AI designed for pre-clinical health pre-screening. 
@@ -516,7 +517,7 @@ async function fetchGroqResponse() {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'llama-3.1-8b-instant',
+                model: 'llama-4-scout',
                 messages: [{ role: 'system', content: prompt }, ...conversationHistory],
                 response_format: { type: 'json_object' }
             })
