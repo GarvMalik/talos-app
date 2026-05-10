@@ -512,23 +512,29 @@ async function fetchGroqResponse() {
         `\n\nCRITICAL LANGUAGE RULE: Respond entirely in ${targetLang}. ` +
         `When done, say "Thank you. I have all the information" in ${targetLang}.`;
 
+    // 1. Combine the system instructions with the actual chat array
+    const apiMessages = [
+        { role: "system", content: prompt },
+        ...conversationHistory
+    ];
+
     try {
        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-        // Notice we are using standard string concatenation here to avoid template literal errors
-        "Authorization": "Bearer " + GROQ_API_KEY, 
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        // The official Groq API string for Llama 4 Scout
-        model: "meta-llama/llama-4-scout-17b-16e-instruct", 
-        messages: chatHistory,
-        response_format: { type: "json_object" }
-    })
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + GROQ_API_KEY, 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+                messages: apiMessages, // 2. Send the correct array
+                response_format: { type: "json_object" }
+            })
         });
 
-        const data = await res.json();
+        // 3. Use 'response', not 'res'
+        const data = await response.json(); 
+        
         document.getElementById(typingId)?.remove();
         setInputState(false);
 
