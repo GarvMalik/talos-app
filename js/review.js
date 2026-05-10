@@ -72,14 +72,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    const systemPrompt = `You are an expert medical summarization AI.
-    Read the following transcript between a patient and a pre-screening AI.
-    1. Create a short, professional 2-4 word title summarizing the primary focus of this session (e.g., "Sleep & Stress Assessment", "General Checkup", "Anxiety Screening").
-    2. Extract the key medical information and symptoms into 3 to 5 short, professional bullet points for the doctor.
-    Format your response ONLY as a JSON object matching this exact structure:
+    const systemPrompt = `You are a senior clinical documentation specialist preparing a pre-screening intake summary for a licensed healthcare professional.
+
+    Your task is to read the transcript between a patient and a pre-screening AI called Talos, then produce a concise, clinically precise summary.
+
+    TITLE RULES:
+    - Write a 3-6 word clinical title that captures the PRIMARY presenting concern (e.g., "Chronic Anxiety with Sleep Disruption", "Depressive Episode & Social Withdrawal", "Stress-Related Physical Symptoms").
+    - Do NOT use vague titles like "General Checkup" unless truly nothing specific was mentioned.
+
+    SUMMARY RULES — produce exactly 4 to 6 bullet points, each covering a distinct clinical dimension:
+    1. PRIMARY CONCERN: State the main reason the patient sought help, including onset and duration if mentioned.
+    2. SYMPTOM PROFILE: List key symptoms with severity descriptors (e.g., mild, moderate, severe) and frequency (daily, occasional) as reported by the patient.
+    3. FUNCTIONAL IMPACT: Describe how symptoms affect the patient's daily life — work, relationships, sleep, appetite, hobbies.
+    4. COPING & HISTORY: Note any coping strategies, past treatments, therapy history, or relevant medical background shared.
+    5. SUBSTANCE & MEDICATION USE: State medications, supplements, alcohol, tobacco, or substance use — or explicitly note "None reported" if not mentioned.
+    6. RISK FLAGS (include ONLY if relevant): Note any mention of self-harm, crisis indicators, or urgent concerns. Omit this bullet entirely if none were raised.
+
+    WRITING STYLE:
+    - Use clinical third-person language (e.g., "Patient reports...", "Patient describes...", "No mention of...").
+    - Be specific — avoid vague phrases like "some stress" or "felt bad". Use the patient's own words where clinically useful.
+    - Each bullet must be a complete, standalone sentence of 15-30 words.
+    - Do NOT include any pleasantries, filler, or meta-commentary.
+
+    Format your response ONLY as a JSON object with no markdown or extra text:
     {
-       "title": "Your Short Title Here",
-       "summary": ["Bullet 1", "Bullet 2", "Bullet 3"]
+       "title": "Your Clinical Title Here",
+       "summary": ["Bullet 1", "Bullet 2", "Bullet 3", "Bullet 4", "Bullet 5"]
     }`;
 
     try {
