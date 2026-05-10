@@ -1,4 +1,3 @@
-
 let GROQ_API_KEY = localStorage.getItem('talosApiKey');
 if (!GROQ_API_KEY) {
     const userInput = prompt("Welcome to Talos! Please paste your free Groq API Key:");
@@ -516,35 +515,24 @@ async function fetchGroqResponse() {
     ];
 
     try {
-       // 1. Ensure you are sending a clean array of objects, NOT an HTML element
-const apiMessages = [
-    { role: "system", content: SYSTEM_PROMPT },
-    ...conversationHistory // Make sure this is an array of {role, content} objects
-];
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + GROQ_API_KEY,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                messages: apiMessages,
+                response_format: { type: "json_object" }
+            })
+        });
 
-try {
+        if (!response.ok) {
+            throw new Error(`API returned status: ${response.status}`);
+        }
 
-   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-            "Authorization": "Bearer " + GROQ_API_KEY, 
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            model: "meta-llama/llama-4-scout-17b-16e-instruct", 
-            messages: apiMessages, // 2. Send the clean array here to fix the 400 error
-            response_format: { type: "json_object" }
-        })
-    });
-
-
-    if (!response.ok) {
-        throw new Error(`API returned status: ${response.status}`);
-    }
-
-    const data = await response.json(); 
-    
-    // ... continue with handling your data ...
+        const data = await response.json();
         
         document.getElementById(typingId)?.remove();
         setInputState(false);
