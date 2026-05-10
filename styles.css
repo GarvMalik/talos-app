@@ -342,7 +342,7 @@ body.high-contrast .icon-lock { color: #5B9B43 !important; }
 body.high-contrast .settings-card, body.high-contrast .btn-secondary, body.high-contrast .support-card, body.high-contrast .summary-card { background-color: #1E1E1E !important; border: 1px solid #444; }
 body.high-contrast h1, body.high-contrast h2, body.high-contrast .settings-title { color: #FFFFFF !important; }
 body.high-contrast h3 { color: #E8E8E8 !important; }
-body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .settings-key-header > span, body.high-contrast .size-selector span, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
+body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .size-selector span, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
 body.high-contrast .settings-btn, body.high-contrast .back-btn { color: #FFFFFF !important; }
 body.high-contrast .btn-past, body.high-contrast .btn-past h3, body.high-contrast .btn-past span { color: #E0E0E0 !important; border-color: #E0E0E0 !important; }
 body.high-contrast .btn-emergency, body.high-contrast .btn-emergency h3, body.high-contrast .btn-emergency span { color: #E56B6F !important; border-color: #E56B6F !important; }
@@ -961,42 +961,44 @@ body.high-contrast .voice-mode-btn { color: #CCC; }
 body.high-contrast .voice-mode-btn.voice-mode-active { background: #2a6032; }
 
 /* =========================================
-   ELEVENLABS KEY — saved state UI
+   INLINE MIC — green pulse when transcribing to input
    ========================================= */
-.settings-key-saved-row {
+.btn-mic.recording-input {
+    color: #386641 !important;
+    background-color: rgba(56, 102, 65, 0.1) !important;
+    border-radius: 50%;
+    animation: pulse-mic-green 1.5s infinite;
+}
+@keyframes pulse-mic-green {
+    0%   { box-shadow: 0 0 0 0 rgba(56, 102, 65, 0.45); }
+    70%  { box-shadow: 0 0 0 14px rgba(56, 102, 65, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 102, 65, 0); }
+}
+
+/* =========================================
+   MODE SWITCH DIVIDER — subtle "back to texting"
+   ========================================= */
+.mode-switch-divider {
+    text-align: center;
+    font-size: 12px;
+    color: #C0B8A8;
+    letter-spacing: 0.04em;
+    margin: 10px 0 6px;
+    user-select: none;
+    pointer-events: none;
+}
+body.high-contrast .mode-switch-divider { color: #555; }
+
+/* =========================================
+   MUTE BUTTON — red tint when active
+   ========================================= */
+.header-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    background-color: #F8F3E6;
-    border: 1.5px solid #E8DCC4;
-    border-radius: 12px;
-    padding: 12px 16px;
-    width: 100%;
-    box-sizing: border-box;
+    gap: 4px;
 }
-.settings-key-masked {
-    font-size: 18px;
-    color: #888;
-    letter-spacing: 2px;
-    flex: 1;
+#muteToggleBtn.muted {
+    color: #BC4749 !important;
+    background-color: rgba(188, 71, 73, 0.1);
+    border-radius: 50%;
 }
-.settings-key-edit-btn {
-    background: none;
-    border: none;
-    color: #386641;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 8px;
-    transition: background 0.2s;
-}
-.settings-key-edit-btn:hover { background: rgba(56,102,65,0.08); }
-
-/* High contrast overrides */
-body.high-contrast .settings-key-saved-row {
-    background-color: #1E1E1E;
-    border-color: #444;
-}
-body.high-contrast .settings-key-masked { color: #666; }
-body.high-contrast .settings-key-edit-btn { color: #5B9B43; }

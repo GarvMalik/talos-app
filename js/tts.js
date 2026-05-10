@@ -25,8 +25,9 @@ let _activeSpeakerBtnId = null;
  * @param {boolean} forcePlay — if true, bypasses silentMode (used in voice mode)
  */
 async function speakAIResponse(text, buttonId = null, forcePlay = false) {
-    // Silent mode check: only block if NOT forced (i.e. text chat context)
-    if (!forcePlay && localStorage.getItem('silentMode') !== 'false') return;
+    // Mute check: block unless forcePlay (voice mode orb) or explicitly unmuted
+    const isMuted = localStorage.getItem('silentMode') !== 'false';
+    if (isMuted && !forcePlay) return;
 
     stopSpeaking();
     _activeSpeakerBtnId = buttonId;
@@ -67,6 +68,19 @@ function stopSpeaking() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (_activeSpeakerBtnId) _setButtonState(_activeSpeakerBtnId, false);
     _isSpeaking = false;
+}
+
+/** Expose mute state for other scripts */
+function isMuted() {
+    return localStorage.getItem('silentMode') !== 'false';
+}
+
+/** Toggle mute and sync any in-page mute buttons */
+function toggleMute() {
+    const muted = isMuted();
+    localStorage.setItem('silentMode', muted ? 'false' : 'true');
+    if (!muted) stopSpeaking(); // stop audio immediately on mute
+    document.dispatchEvent(new CustomEvent('talos:mutechange', { detail: { muted: !muted } }));
 }
 
 function isSpeaking() { return _isSpeaking; }
@@ -256,11 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const silentToggle = document.getElementById('silentModeToggle');
     if (silentToggle) {
-        if (localStorage.getItem('silentMode') === null) localStorage.setItem('silentMode', 'true');
+        if (localStorage.getItem('silentMode') === null) localStorage.setItem('silentMode', 'false');
         silentToggle.checked = localStorage.getItem('silentMode') !== 'false';
         silentToggle.addEventListener('change', (e) => {
-            localStorage.setItem('silentMode', e.target.checked ? 'true' : 'false');
-            if (e.target.checked) stopSpeaking();
+            const muted = e.target.checked;
+            localStorage.setItem('silentMode', muted ? 'true' : 'false');
+            if (muted) stopSpeaking();
+            document.dispatchEvent(new CustomEvent('talos:mutechange', { detail: { muted } }));
         });
     }
 

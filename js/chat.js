@@ -77,6 +77,22 @@ let _cachedMimeType  = null;
 // Voice orb state machine
 let _orbState = 'idle';
 
+// Inline mic auto-send timer
+let _autoSendTimer = null;
+
+// =========================================
+// MUTE HELPER — always reads localStorage at call-time
+// =========================================
+function _isMuted() {
+    // Matches tts.js: silentMode is 'false' when unmuted, anything else = muted
+    return localStorage.getItem('silentMode') !== 'false';
+}
+
+function _safeSpeak(text, id, force) {
+    if (_isMuted() && !force) return;
+    if (typeof speakAIResponse === 'function') speakAIResponse(text, id, force);
+}
+
 // =========================================
 // DOM INIT
 // =========================================
@@ -88,21 +104,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const voiceModeBtn = document.getElementById('voiceModeBtn');
     const muteBtn      = document.getElementById('muteToggleBtn');
 
-    // Mute toggle: sync button icon with current silent mode state
+    // Mute toggle button — delegates to tts.js toggleMute() so both stay in sync
     if (muteBtn) {
         const updateMuteIcon = () => {
-            const isMuted = localStorage.getItem('talosSilentMode') === 'true';
-            muteBtn.querySelector('.material-symbols-rounded').textContent = isMuted ? 'volume_off' : 'volume_up';
-            muteBtn.title = isMuted ? 'Unmute AI voice' : 'Mute AI voice';
-            muteBtn.classList.toggle('muted', isMuted);
+            const muted = _isMuted();
+            muteBtn.querySelector('.material-symbols-rounded').textContent = muted ? 'volume_off' : 'volume_up';
+            muteBtn.title = muted ? 'Unmute AI voice' : 'Mute AI voice';
+            muteBtn.classList.toggle('muted', muted);
         };
         updateMuteIcon();
+
         muteBtn.addEventListener('click', () => {
-            const isMuted = localStorage.getItem('talosSilentMode') === 'true';
-            localStorage.setItem('talosSilentMode', String(!isMuted));
-            if (!isMuted && typeof stopSpeaking === 'function') stopSpeaking(); // stop immediately on mute
+            if (typeof toggleMute === 'function') {
+                toggleMute(); // tts.js owns the state write + stopSpeaking
+            } else {
+                localStorage.setItem('silentMode', _isMuted() ? 'false' : 'true');
+                if (!_isMuted() && typeof stopSpeaking === 'function') stopSpeaking();
+            }
             updateMuteIcon();
         });
+
+        // Stay in sync if settings page toggles the value
+        document.addEventListener('talos:mutechange', updateMuteIcon);
     }
 
     if (chatInput) {
@@ -140,14 +163,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Mic button: single utterance (for inline mic in text chat)
+    // Mic button: transcribe to input box with green pulse + 5s auto-send
     if (micButton) {
         micButton.addEventListener('click', async () => {
             if (_isRecording) {
                 _stopRecording();
+                _cancelAutoSend();
             } else {
                 if (typeof stopSpeaking === 'function') stopSpeaking();
-                await _startRecording(false);
+                await _startRecordingToInput();
             }
         });
     }
@@ -384,6 +408,112 @@ async function _transcribe(blob, looping) {
 }
 
 // =========================================
+// INLINE MIC → INPUT BOX (text mode only)
+// =========================================
+
+function _cancelAutoSend() {
+    if (_autoSendTimer) {
+        clearTimeout(_autoSendTimer);
+        _autoSendTimer = null;
+    }
+}
+
+async function _startRecordingToInput() {
+    if (_isRecording) return;
+
+    const micButton = document.getElementById('micButton');
+    const chatInput = document.getElementById('chatInput');
+
+    try {
+        const stream = await _ensureStream();
+        _audioChunks = [];
+
+        _mediaRecorder = new MediaRecorder(stream, { mimeType: _cachedMimeType });
+        _mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) _audioChunks.push(e.data);
+        };
+
+        _mediaRecorder.onstop = async () => {
+            _cleanupVAD();
+            if (micButton) {
+                micButton.classList.remove('recording');
+                micButton.querySelector('.material-symbols-rounded').textContent = 'mic';
+            }
+
+            const blob = new Blob(_audioChunks, { type: _cachedMimeType });
+            if (blob.size < 3000) return;
+
+            // Transcribe and PUT TEXT INTO THE INPUT BOX (don't send yet)
+            const formData = new FormData();
+            const ext = blob.type.includes('webm') ? 'webm' : 'ogg';
+            formData.append('file', blob, `audio.${ext}`);
+            formData.append('model', 'whisper-large-v3');
+            const lang = localStorage.getItem('ttsLanguage') || 'en-US';
+            formData.append('language', { 'en-US': 'en', 'fi-FI': 'fi', 'sv-SE': 'sv' }[lang] || 'en');
+            formData.append('response_format', 'json');
+
+            try {
+                const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}` },
+                    body: formData
+                });
+                if (!res.ok) return;
+                const { text } = await res.json();
+                const transcript = (text || '').trim();
+                if (!transcript) return;
+
+                // Populate input box
+                if (chatInput) {
+                    chatInput.value = transcript;
+                    chatInput.style.height = 'auto';
+                    chatInput.style.height = chatInput.scrollHeight + 'px';
+                    chatInput.focus();
+                }
+
+                // Auto-send after 5 seconds if user doesn't edit
+                _cancelAutoSend();
+                _autoSendTimer = setTimeout(() => {
+                    _autoSendTimer = null;
+                    if (chatInput && chatInput.value.trim()) {
+                        sendTypedMessage();
+                    }
+                }, 5000);
+
+            } catch(err) {
+                console.error('Inline transcription error:', err);
+            }
+        };
+
+        _mediaRecorder.start(250);
+        _isRecording = true;
+
+        // Green pulse on the mic button while recording
+        if (micButton) {
+            micButton.classList.add('recording', 'recording-input');
+            micButton.querySelector('.material-symbols-rounded').textContent = 'stop';
+        }
+
+        _startVAD(stream, false);
+
+    } catch(err) {
+        console.error('Inline mic error:', err);
+        _releaseStream();
+    }
+}
+
+// Cancel auto-send if user manually edits the input
+document.addEventListener('DOMContentLoaded', () => {
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('input', () => {
+            // If user edits, cancel the auto-send timer (they're taking control)
+            if (_autoSendTimer) _cancelAutoSend();
+        });
+    }
+});
+
+// =========================================
 // VOICE MODE
 // =========================================
 
@@ -396,6 +526,19 @@ async function _enterVoiceMode() {
     document.getElementById('voiceOrb')?.classList.remove('hidden');
 
     if (typeof stopSpeaking === 'function') stopSpeaking();
+
+    // Repeat the last AI question via TTS so user knows what to answer
+    const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
+    if (lastAssistant) {
+        let lastMessage = lastAssistant.content;
+        try { lastMessage = JSON.parse(lastAssistant.content).message || lastMessage; } catch(e) {}
+        _setOrbState('speaking');
+        _setOrbResponse(lastMessage);
+        if (typeof speakAndWait === 'function') {
+            await speakAndWait(lastMessage, 'orb-repeat');
+        }
+    }
+
     _setOrbState('listening');
     await _startRecording(true);
 }
@@ -407,7 +550,6 @@ function _exitVoiceMode() {
     if (_isRecording) _stopRecording();
     if (typeof stopSpeaking === 'function') stopSpeaking();
 
-    // Release the mic stream when leaving voice mode entirely
     _releaseStream();
 
     document.getElementById('voiceModeBtn')?.classList.remove('voice-mode-active');
@@ -417,8 +559,7 @@ function _exitVoiceMode() {
     _setOrbTranscript('');
     _setOrbResponse('');
 
-    // RE-ASK: find the last assistant message and re-render it in the text chat
-    // so the user knows what question to answer after switching back to text mode.
+    // Re-show the last AI question in text chat so user knows what to answer
     const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
     if (lastAssistant) {
         let lastMessage = lastAssistant.content;
@@ -432,10 +573,10 @@ function _exitVoiceMode() {
         const chatHistoryDOM = document.getElementById('chatHistory');
         const msgId = 'speaker-reask-' + Date.now();
 
-        // Add a subtle "switched to text" divider
-        chatHistoryDOM.innerHTML += `<div class="system-message italic-gray" style="text-align:center; font-size:14px; margin: 8px 0;">— Switched to text mode —</div>`;
+        // Subtle mode-switch divider
+        chatHistoryDOM.innerHTML += `<div class="mode-switch-divider">back to texting</div>`;
 
-        // Re-render the last question
+        // Re-render the question bubble
         chatHistoryDOM.innerHTML += `
             <div class="ai-message-row mt-10">
                 <div class="message ai-message mb-0">${lastMessage}</div>
@@ -444,7 +585,7 @@ function _exitVoiceMode() {
                 </button>
             </div>`;
 
-        // Re-render the option pills so user can tap to answer
+        // Re-render option pills
         if (lastOptions.length > 0) {
             let html = '<div class="dynamic-options-container">';
             lastOptions.forEach(o => { html += `<button class="btn-pill">${o}</button>`; });
@@ -631,7 +772,7 @@ async function fetchGroqResponse() {
             document.getElementById('reviewButton').classList.remove('hidden');
             document.getElementById('reviewButton').style.display = 'flex';
             document.getElementById('inputWrapper').classList.add('hidden');
-            if (typeof speakAIResponse === 'function') speakAIResponse(aiMessage, msgId, _isVoiceMode);
+            if (!_isMuted()) _safeSpeak(aiMessage, msgId, _isVoiceMode);
             scrollToBottom();
             return;
         }
@@ -647,13 +788,13 @@ async function fetchGroqResponse() {
 
         if (_isVoiceMode && _voiceLoopActive) {
             _setOrbState('speaking');
-            if (typeof speakAndWait === 'function') {
+            if (!_isMuted() && typeof speakAndWait === 'function') {
                 await speakAndWait(aiMessage, msgId);
             }
             _setOrbState('idle');
             _scheduleNextCapture();
         } else {
-            if (typeof speakAIResponse === 'function') speakAIResponse(aiMessage, msgId, false);
+            _safeSpeak(aiMessage, msgId, false);
         }
 
     } catch (err) {
