@@ -567,22 +567,48 @@ function _exitVoiceMode() {
     _setOrbTranscript('');
     _setOrbResponse('');
 
-    // Re-show option pills for the last AI question so user can still pick one,
-    // but do NOT re-render the question bubble — it's already in the chat history.
+    // Remove the last AI message bubble from the chat so we can re-render it
+    // cleanly below the "back to texting" divider — avoids the duplicate look.
     const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
     if (lastAssistant) {
+        let lastMessage = lastAssistant.content;
         let lastOptions = [];
         try {
             const parsed = JSON.parse(lastAssistant.content);
+            lastMessage  = parsed.message || lastMessage;
             lastOptions  = Array.isArray(parsed.options) ? parsed.options : [];
         } catch(e) {}
 
         const chatHistoryDOM = document.getElementById('chatHistory');
 
-        // Subtle mode-switch divider
+        // Remove the last AI message row (and any option pills) that are already rendered
+        const existingRows = chatHistoryDOM.querySelectorAll('.ai-message-row');
+        if (existingRows.length > 0) {
+            const lastRow = existingRows[existingRows.length - 1];
+            // Also remove option pills that may follow it
+            let next = lastRow.nextElementSibling;
+            while (next && next.classList.contains('dynamic-options-container')) {
+                const toRemove = next;
+                next = next.nextElementSibling;
+                toRemove.remove();
+            }
+            lastRow.remove();
+        }
+
+        // Divider
         chatHistoryDOM.innerHTML += `<div class="mode-switch-divider">back to texting</div>`;
 
-        // Re-render option pills only
+        // Re-render the question bubble below the divider
+        const msgId = 'speaker-reask-' + Date.now();
+        chatHistoryDOM.innerHTML += `
+            <div class="ai-message-row mt-10">
+                <div class="message ai-message mb-0">${lastMessage}</div>
+                <button id="${msgId}" class="btn-speaker" data-text="${lastMessage.replace(/"/g, '&quot;')}" title="Play Audio">
+                    <span class="material-symbols-rounded">volume_up</span>
+                </button>
+            </div>`;
+
+        // Re-render option pills
         if (lastOptions.length > 0) {
             let html = '<div class="dynamic-options-container">';
             lastOptions.forEach(o => { html += `<button class="btn-pill">${o}</button>`; });
