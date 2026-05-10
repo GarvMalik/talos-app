@@ -516,27 +516,35 @@ async function fetchGroqResponse() {
     ];
 
     try {
-       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + GROQ_API_KEY, 
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "meta-llama/llama-4-scout-17b-16e-instruct", 
-                messages: apiMessages, // Sending the clean array to fix the 400 Bad Request
-                response_format: { type: "json_object" }
-            })
-        });
+       // 1. Ensure you are sending a clean array of objects, NOT an HTML element
+const apiMessages = [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...conversationHistory // Make sure this is an array of {role, content} objects
+];
 
-        // FIX 2: Check if the API actually accepted the request before trying to read it
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API Error ${response.status}: ${errorText}`);
-        }
+try {
 
-        // FIX 3: Use 'response.json()' instead of 'res.json()' to fix the ReferenceError
-        const data = await response.json(); 
+   const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+            "Authorization": "Bearer " + GROQ_API_KEY, 
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+            messages: apiMessages, // 2. Send the clean array here to fix the 400 error
+            response_format: { type: "json_object" }
+        })
+    });
+
+
+    if (!response.ok) {
+        throw new Error(`API returned status: ${response.status}`);
+    }
+
+    const data = await response.json(); 
+    
+    // ... continue with handling your data ...
         
         document.getElementById(typingId)?.remove();
         setInputState(false);
