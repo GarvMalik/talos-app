@@ -489,10 +489,7 @@ function sendTypedMessage() {
 // =========================================
 
 async function fetchGroqResponse() {
-    const chatHistory = document.getElementById('chatHistory');
-
-    // Snapshot voice mode state at the START of this response cycle.
-    // This is the value we'll use consistently throughout this one call.
+    const chatHistoryDOM = document.getElementById('chatHistory');
     const inVoiceMode = _isVoiceMode;
 
     setInputState(true);
@@ -500,7 +497,7 @@ async function fetchGroqResponse() {
 
     const typingId = 'typing-' + Date.now();
     if (!inVoiceMode) {
-        chatHistory.innerHTML += `<div id="${typingId}" class="message system-message mt-10 italic-gray">Talos is thinking...</div>`;
+        chatHistoryDOM.innerHTML += `<div id="${typingId}" class="message system-message mt-10 italic-gray">Talos is thinking...</div>`;
         scrollToBottom();
     }
 
@@ -512,33 +509,38 @@ async function fetchGroqResponse() {
         `\n\nCRITICAL LANGUAGE RULE: Respond entirely in ${targetLang}. ` +
         `When done, say "Thank you. I have all the information" in ${targetLang}.`;
 
-    // 1. Combine the system instructions with the actual chat array
+    // FIX 1: Combine the system prompt with the actual conversation array (NOT the HTML element)
     const apiMessages = [
         { role: "system", content: prompt },
         ...conversationHistory
     ];
 
     try {
+       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + GROQ_API_KEY, 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+                messages: apiMessages, // Sending the clean array to fix the 400 Bad Request
+                response_format: { type: "json_object" }
+            })
+        });
 
-const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-        "Authorization": "Bearer " + YOUR_API_KEY, 
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-        // THIS IS WHERE YOU PICK THE MODEL
-        model: "llama-3.3-70b-versatile", 
-        messages: [{ role: "user", content: "Hello!" }]
-    })
-});
-        // 3. Use 'response', not 'res'
+        // FIX 2: Check if the API actually accepted the request before trying to read it
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API Error ${response.status}: ${errorText}`);
+        }
+
+        // FIX 3: Use 'response.json()' instead of 'res.json()' to fix the ReferenceError
         const data = await response.json(); 
         
         document.getElementById(typingId)?.remove();
         setInputState(false);
 
-        // FIX 2: robust JSON parsing with fallback so options always render
         let aiMessage = '';
         let aiOptions = [];
         try {
@@ -554,12 +556,10 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
             aiOptions = [];
         }
 
-        // Update orb with AI's response text
         if (inVoiceMode) _setOrbResponse(aiMessage);
 
-        // Render AI message bubble + speaker button
         const msgId = 'speaker-' + Date.now();
-        chatHistory.innerHTML += `
+        chatHistoryDOM.innerHTML += `
             <div class="ai-message-row mt-10">
                 <div class="message ai-message mb-0">${aiMessage}</div>
                 <button id="${msgId}" class="btn-speaker" data-text="${aiMessage.replace(/"/g, '&quot;')}" title="Play Audio">
@@ -567,7 +567,6 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
                 </button>
             </div>`;
 
-        // Completion detection
         const lower      = aiMessage.toLowerCase();
         const isComplete =
             (lower.includes('thank you') && lower.includes('information')) ||
@@ -579,30 +578,20 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
             document.getElementById('reviewButton').classList.remove('hidden');
             document.getElementById('reviewButton').style.display = 'flex';
             document.getElementById('inputWrapper').classList.add('hidden');
-            // Re-read _isVoiceMode — exitVoiceMode() may have just flipped it
             if (typeof speakAIResponse === 'function') speakAIResponse(aiMessage, msgId, _isVoiceMode);
             scrollToBottom();
             return;
         }
 
-        // FIX 2: Option pills — render whenever NOT in voice mode.
-        // Read _isVoiceMode now (live), not the inVoiceMode snapshot.
-        // This covers the case where the user exited voice mode while the
-        // response was in-flight: the snapshot said "voice", but now we're
-        // in text mode and should show the pills.
         if (!_isVoiceMode && aiOptions.length > 0) {
             let html = '<div class="dynamic-options-container">';
             aiOptions.forEach(o => { html += `<button class="btn-pill">${o}</button>`; });
             html += '</div>';
-            chatHistory.innerHTML += html;
+            chatHistoryDOM.innerHTML += html;
         }
 
         scrollToBottom();
 
-        // ---- Audio ----
-        // FIX 1: read _isVoiceMode live here too, not inVoiceMode snapshot.
-        // If user exited voice mode while fetch was in-flight, _isVoiceMode
-        // is now false → we fall through to the silent-mode-respecting branch.
         if (_isVoiceMode && _voiceLoopActive) {
             _setOrbState('speaking');
             if (typeof speakAndWait === 'function') {
@@ -611,15 +600,14 @@ const response = await fetch("https://api.groq.com/openai/v1/chat/completions", 
             _setOrbState('idle');
             _scheduleNextCapture();
         } else {
-            // FIX 1: normal text chat — always pass forcePlay=false so silent mode is respected
             if (typeof speakAIResponse === 'function') speakAIResponse(aiMessage, msgId, false);
         }
 
     } catch (err) {
-        console.error('API Error:', err);
+        console.error('API Error details:', err);
         setInputState(false);
         document.getElementById(typingId)?.remove();
-        chatHistory.innerHTML += `<div class="message system-message" style="color:#BC4749;">Connection error. Check your API key.</div>`;
+        chatHistoryDOM.innerHTML += `<div class="message system-message" style="color:#BC4749;">Connection error. Check console for details.</div>`;
         if (_isVoiceMode) {
             _setOrbState('idle');
             if (_voiceLoopActive) _scheduleNextCapture();
