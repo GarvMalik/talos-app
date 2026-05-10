@@ -519,19 +519,19 @@ async function fetchGroqResponse() {
     ];
 
     try {
-       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + GROQ_API_KEY, 
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                model: "meta-llama/llama-4-scout-17b-16e-instruct", 
-                messages: apiMessages, // 2. Send the correct array
-                response_format: { type: "json_object" }
-            })
-        });
 
+const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+        "Authorization": "Bearer " + YOUR_API_KEY, 
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        // THIS IS WHERE YOU PICK THE MODEL
+        model: "llama-3.3-70b-versatile", 
+        messages: [{ role: "user", content: "Hello!" }]
+    })
+});
         // 3. Use 'response', not 'res'
         const data = await response.json(); 
         
