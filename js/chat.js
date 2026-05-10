@@ -260,6 +260,10 @@ async function _startRecording(looping = false) {
             // FIX 3: do NOT stop stream tracks here — stream stays alive for next utterance
             _cleanupVAD();
 
+            // If voice mode was exited while we were recording, discard the audio
+            // to prevent a stale transcription from firing an unwanted AI reply.
+            if (looping && !_voiceLoopActive) return;
+
             const blob = new Blob(_audioChunks, { type: _cachedMimeType });
 
             if (blob.size < 3000) {
@@ -390,6 +394,10 @@ async function _transcribe(blob, looping) {
             if (looping && _voiceLoopActive) _scheduleNextCapture();
             return;
         }
+
+        // If voice mode was exited while we were transcribing, discard the result
+        // so we don't fire an unwanted AI reply and auto-reply after switching to text.
+        if (looping && !_voiceLoopActive) return;
 
         clearDynamicButtons();
         const chatHistory = document.getElementById('chatHistory');
