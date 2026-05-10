@@ -567,33 +567,22 @@ function _exitVoiceMode() {
     _setOrbTranscript('');
     _setOrbResponse('');
 
-    // Re-show the last AI question in text chat so user knows what to answer
+    // Re-show option pills for the last AI question so user can still pick one,
+    // but do NOT re-render the question bubble — it's already in the chat history.
     const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
     if (lastAssistant) {
-        let lastMessage = lastAssistant.content;
         let lastOptions = [];
         try {
             const parsed = JSON.parse(lastAssistant.content);
-            lastMessage  = parsed.message || lastMessage;
             lastOptions  = Array.isArray(parsed.options) ? parsed.options : [];
         } catch(e) {}
 
         const chatHistoryDOM = document.getElementById('chatHistory');
-        const msgId = 'speaker-reask-' + Date.now();
 
         // Subtle mode-switch divider
         chatHistoryDOM.innerHTML += `<div class="mode-switch-divider">back to texting</div>`;
 
-        // Re-render the question bubble
-        chatHistoryDOM.innerHTML += `
-            <div class="ai-message-row mt-10">
-                <div class="message ai-message mb-0">${lastMessage}</div>
-                <button id="${msgId}" class="btn-speaker" data-text="${lastMessage.replace(/"/g, '&quot;')}" title="Play Audio">
-                    <span class="material-symbols-rounded">volume_up</span>
-                </button>
-            </div>`;
-
-        // Re-render option pills
+        // Re-render option pills only
         if (lastOptions.length > 0) {
             let html = '<div class="dynamic-options-container">';
             lastOptions.forEach(o => { html += `<button class="btn-pill">${o}</button>`; });
