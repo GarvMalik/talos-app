@@ -959,3 +959,19 @@ body.high-contrast .orb-core { background: #2a6032; }
 body.high-contrast .orb-close-btn { background: rgba(255,255,255,0.08); color: #CCC; }
 body.high-contrast .voice-mode-btn { color: #CCC; }
 body.high-contrast .voice-mode-btn.voice-mode-active { background: #2a6032; }
+
+/* =========================================
+   HEADER ACTIONS — mute + voice mode grouped
+   ========================================= */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Muted state: red tint so user knows it's active */
+#muteToggleBtn.muted {
+    color: #BC4749;
+    background-color: rgba(188, 71, 73, 0.1);
+    border-radius: 50%;
+}

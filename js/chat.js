@@ -86,6 +86,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendBtn      = document.getElementById('sendBtn');
     const micButton    = document.getElementById('micButton');
     const voiceModeBtn = document.getElementById('voiceModeBtn');
+    const muteBtn      = document.getElementById('muteToggleBtn');
+
+    // Mute toggle: sync button icon with current silent mode state
+    if (muteBtn) {
+        const updateMuteIcon = () => {
+            const isMuted = localStorage.getItem('talosSilentMode') === 'true';
+            muteBtn.querySelector('.material-symbols-rounded').textContent = isMuted ? 'volume_off' : 'volume_up';
+            muteBtn.title = isMuted ? 'Unmute AI voice' : 'Mute AI voice';
+            muteBtn.classList.toggle('muted', isMuted);
+        };
+        updateMuteIcon();
+        muteBtn.addEventListener('click', () => {
+            const isMuted = localStorage.getItem('talosSilentMode') === 'true';
+            localStorage.setItem('talosSilentMode', String(!isMuted));
+            if (!isMuted && typeof stopSpeaking === 'function') stopSpeaking(); // stop immediately on mute
+            updateMuteIcon();
+        });
+    }
 
     if (chatInput) {
         chatInput.addEventListener('input', function() {
@@ -389,7 +407,7 @@ function _exitVoiceMode() {
     if (_isRecording) _stopRecording();
     if (typeof stopSpeaking === 'function') stopSpeaking();
 
-    // FIX 3: release the mic stream when leaving voice mode entirely
+    // Release the mic stream when leaving voice mode entirely
     _releaseStream();
 
     document.getElementById('voiceModeBtn')?.classList.remove('voice-mode-active');
@@ -398,6 +416,45 @@ function _exitVoiceMode() {
     _setOrbState('idle');
     _setOrbTranscript('');
     _setOrbResponse('');
+
+    // RE-ASK: find the last assistant message and re-render it in the text chat
+    // so the user knows what question to answer after switching back to text mode.
+    const lastAssistant = [...conversationHistory].reverse().find(m => m.role === 'assistant');
+    if (lastAssistant) {
+        let lastMessage = lastAssistant.content;
+        let lastOptions = [];
+        try {
+            const parsed = JSON.parse(lastAssistant.content);
+            lastMessage  = parsed.message || lastMessage;
+            lastOptions  = Array.isArray(parsed.options) ? parsed.options : [];
+        } catch(e) {}
+
+        const chatHistoryDOM = document.getElementById('chatHistory');
+        const msgId = 'speaker-reask-' + Date.now();
+
+        // Add a subtle "switched to text" divider
+        chatHistoryDOM.innerHTML += `<div class="system-message italic-gray" style="text-align:center; font-size:14px; margin: 8px 0;">— Switched to text mode —</div>`;
+
+        // Re-render the last question
+        chatHistoryDOM.innerHTML += `
+            <div class="ai-message-row mt-10">
+                <div class="message ai-message mb-0">${lastMessage}</div>
+                <button id="${msgId}" class="btn-speaker" data-text="${lastMessage.replace(/"/g, '&quot;')}" title="Play Audio">
+                    <span class="material-symbols-rounded">volume_up</span>
+                </button>
+            </div>`;
+
+        // Re-render the option pills so user can tap to answer
+        if (lastOptions.length > 0) {
+            let html = '<div class="dynamic-options-container">';
+            lastOptions.forEach(o => { html += `<button class="btn-pill">${o}</button>`; });
+            html += '</div>';
+            chatHistoryDOM.innerHTML += html;
+        }
+
+        scrollToBottom();
+        setInputState(false);
+    }
 }
 
 function _scheduleNextCapture() {
