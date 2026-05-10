@@ -75,7 +75,22 @@
                             <span>ElevenLabs Key</span>
                             <span class="settings-badge">High quality</span>
                         </div>
-                        <input type="password" id="elevenLabsKeyInput" class="settings-key-input" placeholder="Paste API key for natural voice" autocomplete="off">
+
+                        <!-- State A: No key saved — show plain input -->
+                        <div id="keyStateEmpty" style="width:100%; display:none;">
+                            <input type="password" id="elevenLabsKeyInput" class="settings-key-input" placeholder="Paste API key for natural voice" autocomplete="off">
+                            <button class="btn-action-light btn-green-text w-full-padded" id="btnSaveKey" style="margin-top:10px;">
+                                Save Key
+                            </button>
+                        </div>
+
+                        <!-- State B: Key already saved — show masked pill + edit button -->
+                        <div id="keyStateSaved" style="width:100%; display:none;">
+                            <div class="settings-key-saved-row">
+                                <span class="settings-key-masked" id="keyMaskedDisplay">••••••••••••••••••••</span>
+                                <button class="settings-key-edit-btn" id="btnEditKey">Edit</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row justify-center">
@@ -102,6 +117,77 @@
 
         </main>
     </div>
+
+    <!-- ElevenLabs Key Update Modal -->
+    <div id="keyUpdateModal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>Update API Key?</h3>
+            <p>Do you want to replace your saved ElevenLabs key with a new one?</p>
+            <input type="password" id="elevenLabsKeyInputModal" class="settings-key-input" placeholder="Paste new API key" autocomplete="off" style="margin-bottom: 16px;">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="btnConfirmKeyUpdate">Yes, Update</button>
+                <button class="modal-btn modal-btn-outline" id="btnCancelKeyUpdate">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ElevenLabs key state UI (runs after DOM is ready)
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedKey     = localStorage.getItem('elevenLabsKey');
+        const stateEmpty   = document.getElementById('keyStateEmpty');
+        const stateSaved   = document.getElementById('keyStateSaved');
+        const modal        = document.getElementById('keyUpdateModal');
+        const modalInput   = document.getElementById('elevenLabsKeyInputModal');
+
+        function showSavedState() {
+            stateEmpty.style.display = 'none';
+            stateSaved.style.display = 'block';
+        }
+        function showEmptyState() {
+            stateEmpty.style.display = 'block';
+            stateSaved.style.display = 'none';
+        }
+
+        // Init: show correct state
+        if (savedKey) { showSavedState(); } else { showEmptyState(); }
+
+        // Save new key (empty state)
+        document.getElementById('btnSaveKey')?.addEventListener('click', () => {
+            const val = document.getElementById('elevenLabsKeyInput').value.trim();
+            if (!val) return;
+            localStorage.setItem('elevenLabsKey', val);
+            document.getElementById('elevenLabsKeyInput').value = '';
+            showSavedState();
+        });
+
+        // Open update modal (saved state)
+        document.getElementById('btnEditKey')?.addEventListener('click', () => {
+            modalInput.value = '';
+            modal.classList.remove('hidden');
+            setTimeout(() => modalInput.focus(), 100);
+        });
+
+        // Confirm update
+        document.getElementById('btnConfirmKeyUpdate')?.addEventListener('click', () => {
+            const val = modalInput.value.trim();
+            if (!val) return;
+            localStorage.setItem('elevenLabsKey', val);
+            modal.classList.add('hidden');
+            showSavedState();
+        });
+
+        // Cancel modal
+        document.getElementById('btnCancelKeyUpdate')?.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close modal on backdrop click
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+    });
+    </script>
 
     <script src="../js/global.js"></script>
     <script src="../js/tts.js"></script>

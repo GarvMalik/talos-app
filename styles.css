@@ -342,7 +342,7 @@ body.high-contrast .icon-lock { color: #5B9B43 !important; }
 body.high-contrast .settings-card, body.high-contrast .btn-secondary, body.high-contrast .support-card, body.high-contrast .summary-card { background-color: #1E1E1E !important; border: 1px solid #444; }
 body.high-contrast h1, body.high-contrast h2, body.high-contrast .settings-title { color: #FFFFFF !important; }
 body.high-contrast h3 { color: #E8E8E8 !important; }
-body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .size-selector span, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
+body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .settings-key-header > span, body.high-contrast .size-selector span, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
 body.high-contrast .settings-btn, body.high-contrast .back-btn { color: #FFFFFF !important; }
 body.high-contrast .btn-past, body.high-contrast .btn-past h3, body.high-contrast .btn-past span { color: #E0E0E0 !important; border-color: #E0E0E0 !important; }
 body.high-contrast .btn-emergency, body.high-contrast .btn-emergency h3, body.high-contrast .btn-emergency span { color: #E56B6F !important; border-color: #E56B6F !important; }
@@ -961,17 +961,42 @@ body.high-contrast .voice-mode-btn { color: #CCC; }
 body.high-contrast .voice-mode-btn.voice-mode-active { background: #2a6032; }
 
 /* =========================================
-   HEADER ACTIONS — mute + voice mode grouped
+   ELEVENLABS KEY — saved state UI
    ========================================= */
-.header-actions {
+.settings-key-saved-row {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: space-between;
+    background-color: #F8F3E6;
+    border: 1.5px solid #E8DCC4;
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 100%;
+    box-sizing: border-box;
 }
+.settings-key-masked {
+    font-size: 18px;
+    color: #888;
+    letter-spacing: 2px;
+    flex: 1;
+}
+.settings-key-edit-btn {
+    background: none;
+    border: none;
+    color: #386641;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.settings-key-edit-btn:hover { background: rgba(56,102,65,0.08); }
 
-/* Muted state: red tint so user knows it's active */
-#muteToggleBtn.muted {
-    color: #BC4749;
-    background-color: rgba(188, 71, 73, 0.1);
-    border-radius: 50%;
+/* High contrast overrides */
+body.high-contrast .settings-key-saved-row {
+    background-color: #1E1E1E;
+    border-color: #444;
 }
+body.high-contrast .settings-key-masked { color: #666; }
+body.high-contrast .settings-key-edit-btn { color: #5B9B43; }
