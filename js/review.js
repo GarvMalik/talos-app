@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: "llama-3.1-8b-instant", 
-                messages: [{ role: "system", content: systemPrompt }, { role: "user", content: transcript }],
-                response_format: { type: "json_object" } 
-            })
+           body: JSON.stringify({
+    model: "meta-llama/llama-4-scout-17b-16e-instruct", // <-- New Llama 4 Scout model
+    messages: [{ role: "system", content: systemPrompt }, { role: "user", content: transcript }],
+    response_format: { type: "json_object" } 
+})
         });
 
         const data = await response.json();
