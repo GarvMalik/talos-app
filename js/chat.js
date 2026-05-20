@@ -749,8 +749,30 @@ async function fetchGroqResponse() {
             })
         });
 
+        // ========================================
+        // ERROR HANDLER INTEGRATION
+        // ========================================
+        
+        // Handle rate limits (HTTP 429)
+        if (response.status === 429) {
+            console.warn('[Chat] Rate limited (HTTP 429). Queuing for retry...');
+            const fallback = talosErrorHandler.handleRateLimit(response);
+            talosErrorHandler.queueForRetry(
+                () => fetchGroqResponse(),
+                'Chat API Request'
+            );
+            document.getElementById(typingId)?.remove();
+            setInputState(false);
+            return;
+        }
+
+        // Handle other API errors
         if (!response.ok) {
-            throw new Error(`API returned status: ${response.status}`);
+            console.error(`[Chat] API error: ${response.status}`);
+            talosErrorHandler.handleAPIError(response, 'Groq Chat API');
+            document.getElementById(typingId)?.remove();
+            setInputState(false);
+            return;
         }
 
         const data = await response.json();
@@ -821,13 +843,14 @@ async function fetchGroqResponse() {
         }
 
     } catch (err) {
-        console.error('API Error details:', err);
-        setInputState(false);
+        console.error("[Chat] Fetch error:", err);
         document.getElementById(typingId)?.remove();
-        chatHistoryDOM.innerHTML += `<div class="message system-message" style="color:#BC4749;">Connection error. Check console for details.</div>`;
-        if (_isVoiceMode) {
+        setInputState(false);
+        
+        // Handle network errors
+        talosErrorHandler.handleNetworkError(err, 'Groq API Fetch');
+          if (_isVoiceMode) {
             _setOrbState('idle');
             if (_voiceLoopActive) _scheduleNextCapture();
         }
-    }
 }

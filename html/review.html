@@ -37,11 +37,16 @@
             </div>
 
             <div class="review-actions">
-                <button class="btn-action-light btn-red-text" id="btnShowDeleteModal">Delete All And Start Over</button>
-                <button class="btn-primary w-full-btn-rounded mb-0" id="btnSubmitSummary">
-                <span class="text-large font-bold">Submit To Doctor</span>
-                </button>
-            </div>
+    <button class="btn-action-light" id="btnDownloadPDF">
+        <span class="material-symbols-rounded">download</span> Download PDF
+    </button>
+    <button class="btn-action-light btn-red-text" id="btnShowDeleteModal">
+        Delete All And Start Over
+    </button>
+    <button class="btn-primary w-full-btn-rounded mb-0" id="btnSubmitSummary">
+        <span class="text-large font-bold">Submit To Doctor</span>
+    </button>
+</div>
         </main>
     </div>
 
@@ -66,7 +71,8 @@
             </div>
         </div>
     </div>
-
+<script src="js/error-handler.js"></script>
+<script src="js/pdf-generator.js"></script>
     <script src="../js/global.js"></script>
     <script src="../js/review.js"></script>
 </body>

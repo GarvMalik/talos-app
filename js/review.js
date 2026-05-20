@@ -135,3 +135,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         summaryList.innerHTML = '<li class="btn-red-text" style="list-style: none;">Connection error. Could not connect to AI.</li>';
     }
 });
+// When user clicks "Download PDF"
+document.getElementById('btnDownloadPDF')?.addEventListener('click', async () => {
+    const summaryRecord = {
+        id: document.getElementById('patientIdDisplay').textContent,
+        date: new Date().toLocaleDateString(),
+        title: 'Clinical Intake Notes', // or extracted from page
+        notes: Array.from(document.querySelectorAll('.intake-list li'))
+            .map(li => li.textContent)
+    };
+
+    const filename = await talosPDFGenerator.generatePDF(
+        summaryRecord,
+        'Patient Name' // optional
+    );
+
+    if (filename) {
+        console.log('PDF generated:', filename);
+        // Show success message
+        talosErrorHandler?.showErrorBanner('✅ PDF Generated', `Saved as ${filename}`);
+    }
+});
