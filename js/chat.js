@@ -854,3 +854,4 @@ async function fetchGroqResponse() {
             if (_voiceLoopActive) _scheduleNextCapture();
         }
 }
+}
