@@ -1,0 +1,78 @@
+{
+  "name": "Talos Care - Pre-Screening AI",
+  "short_name": "Talos Care",
+  "description": "Secure, accessible AI-powered pre-screening tool for patient intake and clinical assessment",
+  "start_url": "/talos-app/index.html",
+  "scope": "/talos-app/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#386641",
+  "categories": ["healthcare", "medical"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23386641' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>T</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23386641' width='512' height='512'/><text x='50%' y='50%' font-size='200' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>T</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23386641' width='192' height='192' rx='45'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>T</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23F5F5F0' width='540' height='720'/><text x='50%' y='100' font-size='24' font-weight='bold' text-anchor='middle' fill='%23333'>Talos Care</text><text x='50%' y='360' font-size='18' text-anchor='middle' fill='%23666'>AI-Powered Pre-Screening</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start New Screening",
+      "short_name": "New Screening",
+      "description": "Begin a new pre-screening assessment",
+      "url": "/talos-app/html/chat.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23386641' width='96' height='96'/><text x='50%' y='50%' font-size='50' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>+</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "View Past Screenings",
+      "short_name": "History",
+      "description": "Access your screening history and past summaries",
+      "url": "/talos-app/html/past-summaries.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><rect fill='%23386641' width='96' height='96'/><text x='50%' y='50%' font-size='40' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>📋</text></svg>",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/talos-app/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

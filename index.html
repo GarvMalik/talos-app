@@ -6,6 +6,10 @@
     <title>Talos Care - Home</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0" />
+    <link rel="manifest" href="/talos-app/manifest.json">
+<meta name="theme-color" content="#386641">
+<meta name="description" content="Secure, accessible AI-powered pre-screening tool for patient intake">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23386641' width='180' height='180'/><text x='90' y='90' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dominant-baseline='central'>T</text></svg>">
 </head>
 <body>
     <div class="mobile-container">
@@ -46,5 +50,20 @@
     </div>
 
   <script src="js/global.js"></script>
+  
+  <script>
+  // Register service worker for PWA functionality
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/talos-app/sw.js')
+            .then((registration) => {
+                console.log('[PWA] Service Worker registered:', registration);
+            })
+            .catch((err) => {
+                console.warn('[PWA] Service Worker registration failed:', err);
+            });
+    });
+}
+</script>
 </body>
 </html>
