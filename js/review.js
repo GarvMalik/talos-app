@@ -36,17 +36,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // 2. Submit Logic (Only saves when they click the green button)
-    document.getElementById('btnSubmitSummary').addEventListener('click', () => {
+    document.getElementById('btnSubmitSummary').addEventListener('click', async () => {
         if (currentSummaryRecord) {
             // Save the held record to the Past Summaries list
             let pastSummaries = JSON.parse(localStorage.getItem('talosPastSummaries')) || [];
-            pastSummaries.unshift(currentSummaryRecord); 
+            pastSummaries.unshift(currentSummaryRecord);
             localStorage.setItem('talosPastSummaries', JSON.stringify(pastSummaries));
-            
+
+            // Email the summary to the doctor if intake provided an address
+            // and EmailJS credentials are configured (set in Settings).
+            const intake = JSON.parse(localStorage.getItem('talosIntake') || '{}');
+            if (intake.doctorEmail && typeof talosEmailSubmission !== 'undefined' && talosEmailSubmission.isInitialized) {
+                await talosEmailSubmission.submitToPhysician(
+                    currentSummaryRecord,
+                    intake.doctorEmail,
+                    intake.patientName || null
+                );
+            }
+
             // Clear the active chat history so it cannot be resubmitted
             localStorage.removeItem('talosChatHistory');
         }
-        
+
         // Trigger the transition to the success page
         if (typeof navigateTo === 'function') navigateTo('success.html');
     });
@@ -63,6 +74,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     let transcript = "";
+
+    // Prepend intake form data so it lands in the clinical summary
+    const intakeData = JSON.parse(localStorage.getItem('talosIntake') || '{}');
+    if (intakeData.medications || intakeData.allergies || intakeData.age) {
+        transcript += "INTAKE FORM (collected before chat):\n";
+        if (intakeData.age)         transcript += `Age: ${intakeData.age}\n`;
+        if (intakeData.medications) transcript += `Current medications: ${intakeData.medications}\n`;
+        if (intakeData.allergies)   transcript += `Allergies: ${intakeData.allergies}\n`;
+        transcript += "\nCHAT TRANSCRIPT:\n";
+    }
+
     JSON.parse(rawHistory).forEach(msg => {
         let role = msg.role === 'user' ? 'Patient' : 'Talos';
         let text = msg.content;
@@ -98,7 +120,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     {
        "title": "Your Clinical Title Here",
        "summary": ["Bullet 1", "Bullet 2", "Bullet 3", "Bullet 4", "Bullet 5"]
-    }`;
+    }
+
+    LANGUAGE RULE: Write the title and all summary bullets in ${getTalosLanguage().llm}. The patient must be able to review this summary in their own language.`;
 
     try {
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -125,7 +149,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 id: newPatientId,
                 date: new Date().toLocaleDateString(),
                 title: chatTitle,
-                notes: bullets
+                notes: bullets,
+                patientName: intakeData.patientName || null
             };
         } else {
             summaryList.innerHTML = '<li>Error generating summary from data.</li>';

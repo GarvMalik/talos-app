@@ -10,7 +10,7 @@
    ========================================= */
 
 const CACHE_PREFIX = 'talos-care';
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
@@ -22,7 +22,9 @@ const STATIC_ASSETS = [
     '/talos-app/js/settings.js',
     '/talos-app/js/tts.js',
     '/talos-app/js/pdf-generator.js',
+    '/talos-app/js/emailjs-integration.js',
     '/talos-app/js/error-handler.js',
+    '/talos-app/html/intake.html',
     '/talos-app/html/chat.html',
     '/talos-app/html/review.html',
     '/talos-app/html/settings.html',

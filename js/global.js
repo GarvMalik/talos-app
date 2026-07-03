@@ -3,6 +3,27 @@
    UPDATED: Silent mode now defaults to ON for new users
    ========================================= */
 
+// 0. Supported languages — single source of truth.
+// whisper: ISO-639-1 code sent to Whisper transcription.
+// llm: English name injected into the LLM language rule.
+const TALOS_LANGUAGES = {
+    'en-US': { whisper: 'en', llm: 'English',    label: 'English'    },
+    'fi-FI': { whisper: 'fi', llm: 'Finnish',    label: 'Suomi'      },
+    'sv-SE': { whisper: 'sv', llm: 'Swedish',    label: 'Svenska'    },
+    'es-ES': { whisper: 'es', llm: 'Spanish',    label: 'Español'    },
+    'fr-FR': { whisper: 'fr', llm: 'French',     label: 'Français'   },
+    'de-DE': { whisper: 'de', llm: 'German',     label: 'Deutsch'    },
+    'pt-PT': { whisper: 'pt', llm: 'Portuguese', label: 'Português'  },
+    'hi-IN': { whisper: 'hi', llm: 'Hindi',      label: 'हिन्दी'       },
+    'ar-SA': { whisper: 'ar', llm: 'Arabic',     label: 'العربية'     },
+    'zh-CN': { whisper: 'zh', llm: 'Chinese',    label: '中文'        },
+};
+
+function getTalosLanguage() {
+    const saved = localStorage.getItem('ttsLanguage') || 'en-US';
+    return TALOS_LANGUAGES[saved] || TALOS_LANGUAGES['en-US'];
+}
+
 // 1. Navigation System
 function navigateTo(url) {
     document.body.classList.add('fade-out');

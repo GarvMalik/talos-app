@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talos Care - Intake</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0" />
+</head>
+<body>
+    <div class="mobile-container">
+        <header class="app-header">
+            <button class="back-btn" data-navigate="../index.html">
+                <span class="material-symbols-rounded">arrow_back_ios_new</span>
+            </button>
+            <h1>Before We Start</h1>
+            <div class="spacer"></div>
+        </header>
+
+        <main>
+            <div class="greeting-section">
+                <p>These details go to your doctor along with your screening summary, so the AI can focus purely on how you're feeling. Every field is optional.</p>
+            </div>
+
+            <div class="settings-group">
+                <h3 class="settings-title">About You</h3>
+                <div class="settings-card">
+                    <div class="settings-row settings-row-column">
+                        <input type="text" id="intakeName" class="settings-key-input" placeholder="Full name (optional)" autocomplete="name" style="margin-bottom:8px;">
+                        <input type="number" id="intakeAge" class="settings-key-input" placeholder="Age (optional)" min="1" max="120">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3 class="settings-title">Medical Basics</h3>
+                <div class="settings-card">
+                    <div class="settings-row settings-row-column">
+                        <input type="text" id="intakeMedications" class="settings-key-input" placeholder="Current medications, e.g. none" autocomplete="off" style="margin-bottom:8px;">
+                        <input type="text" id="intakeAllergies" class="settings-key-input" placeholder="Allergies, e.g. penicillin, none" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3 class="settings-title">Your Doctor</h3>
+                <div class="settings-card">
+                    <div class="settings-row settings-row-column">
+                        <input type="email" id="intakeDoctorEmail" class="settings-key-input" placeholder="Doctor's email (for the summary)" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btnStartScreening">
+                <div class="btn-text">
+                    <h3>Continue to Screening</h3>
+                    <p>Takes about 3-5 minutes.</p>
+                </div>
+                <span class="material-symbols-rounded">arrow_forward</span>
+            </button>
+
+            <div class="settings-row justify-center">
+                <button class="btn-action-light" id="btnSkipIntake">Skip for now</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/error-handler.js"></script>
+    <script src="../js/global.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Prefill from a previous session
+        const saved = JSON.parse(localStorage.getItem('talosIntake') || '{}');
+        if (saved.patientName)  document.getElementById('intakeName').value        = saved.patientName;
+        if (saved.age)          document.getElementById('intakeAge').value         = saved.age;
+        if (saved.medications)  document.getElementById('intakeMedications').value = saved.medications;
+        if (saved.allergies)    document.getElementById('intakeAllergies').value   = saved.allergies;
+        if (saved.doctorEmail)  document.getElementById('intakeDoctorEmail').value = saved.doctorEmail;
+
+        document.getElementById('btnStartScreening').addEventListener('click', () => {
+            const email = document.getElementById('intakeDoctorEmail').value.trim();
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                talosErrorHandler?.showErrorBanner('Invalid Email', "Please check your doctor's email address, or leave it empty.");
+                return;
+            }
+            const intake = {
+                patientName: document.getElementById('intakeName').value.trim(),
+                age:         document.getElementById('intakeAge').value.trim(),
+                medications: document.getElementById('intakeMedications').value.trim(),
+                allergies:   document.getElementById('intakeAllergies').value.trim(),
+                doctorEmail: email,
+                savedAt:     new Date().toISOString()
+            };
+            localStorage.setItem('talosIntake', JSON.stringify(intake));
+            navigateTo('chat.html');
+        });
+
+        document.getElementById('btnSkipIntake').addEventListener('click', () => {
+            navigateTo('chat.html');
+        });
+    });
+    </script>
+</body>
+</html>

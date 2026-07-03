@@ -367,9 +367,7 @@ async function _transcribe(blob, looping) {
     formData.append('file', blob, `audio.${ext}`);
     formData.append('model', 'whisper-large-v3');
 
-    const lang     = localStorage.getItem('ttsLanguage') || 'en-US';
-    const langCode = { 'en-US': 'en', 'fi-FI': 'fi', 'sv-SE': 'sv' }[lang] || 'en';
-    formData.append('language', langCode);
+    formData.append('language', getTalosLanguage().whisper);
     formData.append('response_format', 'json');
 
     try {
@@ -456,8 +454,7 @@ async function _startRecordingToInput() {
             const ext = blob.type.includes('webm') ? 'webm' : 'ogg';
             formData.append('file', blob, `audio.${ext}`);
             formData.append('model', 'whisper-large-v3');
-            const lang = localStorage.getItem('ttsLanguage') || 'en-US';
-            formData.append('language', { 'en-US': 'en', 'fi-FI': 'fi', 'sv-SE': 'sv' }[lang] || 'en');
+            formData.append('language', getTalosLanguage().whisper);
             formData.append('response_format', 'json');
 
             try {
@@ -721,13 +718,21 @@ async function fetchGroqResponse() {
         scrollToBottom();
     }
 
-    const savedLang  = localStorage.getItem('ttsLanguage') || 'en-US';
-    const langMap    = { 'en-US': 'English', 'fi-FI': 'Finnish', 'sv-SE': 'Swedish' };
-    const targetLang = langMap[savedLang] || 'English';
+    const targetLang = getTalosLanguage().llm;
 
-    const prompt = SYSTEM_PROMPT +
+    let prompt = SYSTEM_PROMPT +
         `\n\nCRITICAL LANGUAGE RULE: Respond entirely in ${targetLang}. ` +
         `When done, say "Thank you. I have all the information" in ${targetLang}.`;
+
+    // Intake form context — lets the AI skip topics already answered
+    const intake = JSON.parse(localStorage.getItem('talosIntake') || '{}');
+    if (intake.medications || intake.allergies || intake.patientName || intake.age) {
+        prompt += `\n\nPATIENT INTAKE DATA (already collected before this chat — do NOT re-ask these):`;
+        if (intake.patientName) prompt += `\n- Name: ${intake.patientName}`;
+        if (intake.age)         prompt += `\n- Age: ${intake.age}`;
+        if (intake.medications) prompt += `\n- Current medications: ${intake.medications} (skip mandatory topic f — medications already reported; you may still ask about alcohol/tobacco use)`;
+        if (intake.allergies)   prompt += `\n- Allergies: ${intake.allergies}`;
+    }
 
     // FIX 1: Combine the system prompt with the actual conversation array (NOT the HTML element)
     const apiMessages = [
