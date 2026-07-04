@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Build the HTML for the card, injecting the dynamic title
             const cardHTML = `
                 <div class="summary-card" data-index="${index}">
-                    <div class="summary-header">
+                    <div class="summary-header" role="button" tabindex="0" aria-expanded="false">
                         <div class="summary-meta">
                             <span class="tag-green">${id}</span>
                             <span class="summary-date">${date}</span>
@@ -75,6 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Call the function immediately to draw the page
     renderSummaries();
 
+    // Keyboard support: Enter/Space toggles the accordion like a click
+    container.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('summary-header')) {
+            e.preventDefault();
+            e.target.click();
+        }
+    });
+
     // 2. Event Listener for clicking inside the container (Event Delegation)
     container.addEventListener('click', (e) => {
         
@@ -87,10 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (isExpanded) {
                 card.classList.remove('expanded');
-                icon.innerText = 'expand_more'; 
+                icon.innerText = 'expand_more';
+                header.setAttribute('aria-expanded', 'false');
             } else {
                 card.classList.add('expanded');
-                icon.innerText = 'expand_less'; 
+                icon.innerText = 'expand_less';
+                header.setAttribute('aria-expanded', 'true');
             }
         }
 

@@ -104,5 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
     applySavedSettings();
     if (typeof applyTranslations === 'function') applyTranslations();
     updateGreeting();
+    // Material icon glyphs are always decorative here (paired with text or a
+    // labelled control) — hide them from screen readers so ligature names
+    // like "arrow_back_ios_new" are never announced. The observer covers
+    // dynamically injected content (chat messages, summary cards).
+    const hideIcons = (root) => {
+        if (root.querySelectorAll) root.querySelectorAll('.material-symbols-rounded').forEach(el =>
+            el.setAttribute('aria-hidden', 'true'));
+    };
+    hideIcons(document);
+    new MutationObserver(muts =>
+        muts.forEach(m => m.addedNodes.forEach(hideIcons))
+    ).observe(document.body, { childList: true, subtree: true });
     window.dispatchEvent(new Event('scroll'));
 });

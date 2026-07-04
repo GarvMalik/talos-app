@@ -8,12 +8,16 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // Text Size
-    document.querySelectorAll('.size-selector span').forEach(span => {
-        span.addEventListener('click', (e) => {
-            const size = e.target.dataset.size;
+    document.querySelectorAll('.size-selector [data-size]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const size = e.currentTarget.dataset.size;
             localStorage.setItem('textSize', size);
-            document.querySelectorAll('.size-selector span').forEach(s => s.classList.remove('active'));
-            e.target.classList.add('active');
+            document.querySelectorAll('.size-selector [data-size]').forEach(s => {
+                s.classList.remove('active');
+                s.removeAttribute('aria-pressed');
+            });
+            e.currentTarget.classList.add('active');
+            e.currentTarget.setAttribute('aria-pressed', 'true');
             if (typeof applySavedSettings === 'function') applySavedSettings();
         });
     });

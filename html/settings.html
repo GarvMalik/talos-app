@@ -10,7 +10,7 @@
 <body>
     <div class="mobile-container">
         <header class="app-header">
-            <button class="back-btn" data-navigate="../index.html">
+            <button class="back-btn" aria-label="Back" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
             <h1 data-i18n="set_title">Settings</h1>
@@ -24,10 +24,10 @@
                 <div class="settings-card">
                     <div class="settings-row">
                         <span data-i18n="set_text_size">Text Size</span>
-                        <div class="size-selector">
-                            <span data-size="S">S</span>
-                            <span class="active" data-size="M">M</span>
-                            <span data-size="L">L</span>
+                        <div class="size-selector" role="group" aria-label="Text size">
+                            <button data-size="S" aria-label="Small text">S</button>
+                            <button class="active" data-size="M" aria-label="Medium text" aria-pressed="true">M</button>
+                            <button data-size="L" aria-label="Large text">L</button>
                         </div>
                     </div>
                     <div class="settings-divider"></div>
@@ -85,7 +85,7 @@
 
                         <!-- State A: No key saved — show plain input -->
                         <div id="keyStateEmpty" style="width:100%; display:none;">
-                            <input type="password" id="elevenLabsKeyInput" class="settings-key-input" placeholder="Paste API key for natural voice" autocomplete="off">
+                            <input type="password" id="elevenLabsKeyInput" class="settings-key-input" placeholder="Paste API key for natural voice" aria-label="ElevenLabs API key" autocomplete="off">
                             <button class="btn-action-light btn-green-text w-full-padded" id="btnSaveKey" style="margin-top:10px;">
                                 Save Key
                             </button>
@@ -118,7 +118,7 @@
                         </div>
 
                         <div id="groqStateEmpty" style="width:100%; display:none;">
-                            <input type="password" id="groqKeyInput" class="settings-key-input" placeholder="Paste your free Groq API key" autocomplete="off">
+                            <input type="password" id="groqKeyInput" class="settings-key-input" placeholder="Paste your free Groq API key" aria-label="Groq API key" autocomplete="off">
                             <button class="btn-action-light btn-green-text w-full-padded" id="btnSaveGroqKey" style="margin-top:10px;">
                                 Save Key
                             </button>
@@ -139,7 +139,7 @@
                 <div class="settings-card">
                     <div class="settings-row">
                         <span>Consent Agreement</span>
-                        <button class="btn-icon-green" id="btnConsent">
+                        <button class="btn-icon-green" id="btnConsent" aria-label="Open consent agreement">
                             <span class="material-symbols-rounded">link</span>
                         </button>
                     </div>
@@ -152,11 +152,11 @@
     </div>
 
     <!-- ElevenLabs Key Update Modal -->
-    <div id="keyUpdateModal" class="modal-overlay hidden">
+    <div id="keyUpdateModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="keyUpdateTitle">
         <div class="modal-box">
-            <h3>Update API Key?</h3>
+            <h3 id="keyUpdateTitle">Update API Key?</h3>
             <p>Do you want to replace your saved ElevenLabs key with a new one?</p>
-            <input type="password" id="elevenLabsKeyInputModal" class="settings-key-input" placeholder="Paste new API key" autocomplete="off" style="margin-bottom: 16px;">
+            <input type="password" id="elevenLabsKeyInputModal" class="settings-key-input" placeholder="Paste new API key" aria-label="New ElevenLabs API key" autocomplete="off" style="margin-bottom: 16px;">
             <div class="modal-buttons">
                 <button class="modal-btn modal-btn-primary" id="btnConfirmKeyUpdate">Yes, Update</button>
                 <button class="modal-btn modal-btn-outline" id="btnCancelKeyUpdate">Cancel</button>
@@ -215,9 +215,12 @@
             modal.classList.add('hidden');
         });
 
-        // Close modal on backdrop click
+        // Close modal on backdrop click or Escape
         modal?.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.add('hidden');
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) modal.classList.add('hidden');
         });
 
         // Groq AI key (same two-state pattern; Edit re-opens the input)

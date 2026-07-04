@@ -61,6 +61,7 @@ class TalosErrorHandler {
         }
 
         const banner = document.createElement('div');
+        banner.setAttribute('role', 'alert');
         banner.id = 'talos-rate-limit-banner';
         banner.className = 'talos-error-banner talos-rate-limit';
         banner.innerHTML = `
@@ -240,6 +241,7 @@ class TalosErrorHandler {
 
     showErrorBanner(title, message, status = null) {
         const banner = document.createElement('div');
+        banner.setAttribute('role', 'alert');
         banner.className = 'talos-error-banner talos-api-error';
         banner.innerHTML = `
             <div class="error-banner-content">

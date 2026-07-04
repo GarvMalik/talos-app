@@ -11,7 +11,7 @@
     <div class="mobile-container">
 
         <header class="app-header">
-            <button class="back-btn" data-navigate="../index.html">
+            <button class="back-btn" aria-label="Back" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
             <h1 class="flex-center-gap">
@@ -19,10 +19,10 @@
                 <span class="material-symbols-rounded icon-lock">lock</span>
             </h1>
             <div class="header-actions">
-                <button id="muteToggleBtn" class="voice-mode-btn" title="Mute AI voice">
+                <button id="muteToggleBtn" class="voice-mode-btn" title="Mute AI voice" aria-label="Mute AI voice">
                     <span class="material-symbols-rounded">volume_up</span>
                 </button>
-                <button id="voiceModeBtn" class="voice-mode-btn" title="Voice conversation mode">
+                <button id="voiceModeBtn" class="voice-mode-btn" title="Voice conversation mode" aria-label="Voice conversation mode">
                     <span class="material-symbols-rounded">graphic_eq</span>
                 </button>
             </div>
@@ -30,7 +30,7 @@
 
         <!-- Text chat area -->
         <main class="chat-area" id="chatContainer">
-            <div class="chat-history" id="chatHistory"></div>
+            <div class="chat-history" id="chatHistory" aria-live="polite"></div>
         </main>
 
         <!-- Text input -->
@@ -42,10 +42,10 @@
                 </div>
                 <div class="input-box">
                     <textarea id="chatInput" rows="1" placeholder="Type your answer..." data-i18n-ph="type_answer"></textarea>
-                    <button class="btn-mic" id="micButton" title="Voice input">
+                    <button class="btn-mic" id="micButton" title="Voice input" aria-label="Voice input">
                         <span class="material-symbols-rounded">mic</span>
                     </button>
-                    <button class="btn-send" id="sendBtn">
+                    <button class="btn-send" id="sendBtn" aria-label="Send message">
                         <span class="material-symbols-rounded">arrow_upward</span>
                     </button>
                 </div>
@@ -93,19 +93,19 @@
 
         <!-- Controls -->
         <div class="orb-controls">
-            <button class="orb-close-btn" id="orbCloseBtn" onclick="document.getElementById('voiceModeBtn').click()">
+            <button class="orb-close-btn" id="orbCloseBtn" aria-label="Exit voice mode" onclick="document.getElementById('voiceModeBtn').click()">
                 <span class="material-symbols-rounded">close</span>
             </button>
         </div>
 
     </div>
     <!-- One-time welcome: shown only when no AI key is saved yet -->
-    <div id="welcomeSetup" class="modal-overlay hidden">
+    <div id="welcomeSetup" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
         <div class="modal-box welcome-box">
             <span class="material-symbols-rounded welcome-icon">health_and_safety</span>
-            <h3>Welcome to Talos</h3>
+            <h3 id="welcomeTitle">Welcome to Talos</h3>
             <p>Talos runs on the free Groq AI service. Paste your key below — it's stored only on this device and takes one minute to create.</p>
-            <input type="password" id="welcomeKeyInput" class="settings-key-input" placeholder="Paste your Groq API key" autocomplete="off">
+            <input type="password" id="welcomeKeyInput" class="settings-key-input" placeholder="Paste your Groq API key" aria-label="Groq API key" autocomplete="off">
             <button class="modal-btn modal-btn-primary w-full-padded" id="btnWelcomeStart" style="margin-top:14px;">
                 Start My Screening
             </button>

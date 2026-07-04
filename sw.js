@@ -10,7 +10,7 @@
    ========================================= */
 
 const CACHE_PREFIX = 'talos-care';
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [

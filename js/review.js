@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('deleteModal').classList.add('hidden');
     });
 
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('deleteModal');
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) modal.classList.add('hidden');
+    });
+
     document.getElementById('btnConfirmDelete').addEventListener('click', () => {
         localStorage.removeItem('talosChatHistory');
         document.getElementById('modalStep1').classList.add('hidden');

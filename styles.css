@@ -230,9 +230,9 @@ body {
 .settings-card { background-color: #FCFAF5; border-radius: 20px; padding: 0 20px; display: flex; flex-direction: column; border: 1px solid transparent; }
 .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; font-size: 20px; color: #333; }
 .settings-divider { height: 1px; background-color: #F8F3E6; width: 100%; }
-.size-selector { display: flex; gap: 16px; align-items: center; font-size: 20px; color: #333; }
-.size-selector span { cursor: pointer; }
-.size-selector span.active { background-color: #4A8446; color: white; width: 34px; height: 34px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+.size-selector { display: flex; gap: 8px; align-items: center; font-size: 20px; color: #333; }
+.size-selector button { cursor: pointer; background: none; border: none; font: inherit; color: inherit; width: 44px; height: 44px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+.size-selector button.active { background-color: #4A8446; color: white; }
 .voice-selector { display: flex; align-items: center; gap: 8px; cursor: pointer; }
 .voice-selector .material-symbols-rounded { font-size: 28px; }
 .btn-icon-green { background-color: #444; color: white; border: none; border-radius: 20px; width: 60px; height: 36px; display: flex; justify-content: center; align-items: center; cursor: pointer; }
@@ -342,7 +342,7 @@ body.high-contrast .icon-lock { color: #5B9B43 !important; }
 body.high-contrast .settings-card, body.high-contrast .btn-secondary, body.high-contrast .support-card, body.high-contrast .summary-card { background-color: #1E1E1E !important; border: 1px solid #444; }
 body.high-contrast h1, body.high-contrast h2, body.high-contrast .settings-title { color: #FFFFFF !important; }
 body.high-contrast h3 { color: #E8E8E8 !important; }
-body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .settings-key-header > span, body.high-contrast .size-selector span, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
+body.high-contrast p, body.high-contrast .settings-row > span, body.high-contrast .settings-key-header > span, body.high-contrast .size-selector button, body.high-contrast .voice-selector span { color: #B3B3B3 !important; }
 body.high-contrast .settings-btn, body.high-contrast .back-btn { color: #FFFFFF !important; }
 body.high-contrast .btn-past, body.high-contrast .btn-past h3, body.high-contrast .btn-past span { color: #E0E0E0 !important; border-color: #E0E0E0 !important; }
 body.high-contrast .btn-emergency, body.high-contrast .btn-emergency h3, body.high-contrast .btn-emergency span { color: #E56B6F !important; border-color: #E56B6F !important; }
@@ -631,7 +631,7 @@ body.high-contrast .modal-btn-outline {
 }
 .settings-sub {
     font-size: 14px !important;
-    color: #888 !important;
+    color: #666 !important;
     line-height: 1.4 !important;
     margin: 0 !important;
 }
@@ -1114,7 +1114,7 @@ body.high-contrast .mode-switch-divider { color: #555; }
 .share-row:disabled { opacity: 0.4; cursor: default; }
 .share-row .material-symbols-rounded { font-size: 26px; color: #386641; }
 .share-row-text h4 { font-size: 16px; color: #2c2c2c; margin-bottom: 2px; }
-.share-row-text p  { font-size: 13.5px; color: #888; }
+.share-row-text p  { font-size: 13.5px; color: #666; }
 
 /* =========================================
    21. CHAT POLISH — message entrances & typing dots
@@ -1209,6 +1209,27 @@ a.btn-card-action, a.btn-danger { text-decoration: none; }
 .welcome-link:hover { text-decoration: underline; }
 .welcome-back {
     background: none; border: none; cursor: pointer;
-    margin-top: 16px; color: #999; font-size: 14px; font-weight: 500;
+    margin-top: 16px; color: #767676; font-size: 14px; font-weight: 500;
 }
 .welcome-back:hover { color: #386641; }
+
+/* =========================================
+   24. ACCESSIBILITY — focus visibility & RTL
+   ========================================= */
+button:focus-visible, a:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+    outline: 3px solid #386641;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+body.high-contrast button:focus-visible, body.high-contrast a:focus-visible,
+body.high-contrast input:focus-visible, body.high-contrast textarea:focus-visible,
+body.high-contrast select:focus-visible, body.high-contrast [tabindex]:focus-visible {
+    outline-color: #A7C957;
+}
+
+/* Keyboard-focusable accordion headers */
+.summary-header { cursor: pointer; }
+
+/* RTL: flip directional paddings that matter; flex layouts mirror automatically */
+[dir="rtl"] .back-btn .material-symbols-rounded { transform: scaleX(-1); }

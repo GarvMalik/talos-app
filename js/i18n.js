@@ -423,6 +423,10 @@ function applyTranslations(root) {
     });
     scope.querySelectorAll('[data-i18n-ph]').forEach(el => {
         el.placeholder = t(el.dataset.i18nPh);
+        // Placeholder-only inputs have no accessible name — mirror it.
+        el.setAttribute('aria-label', t(el.dataset.i18nPh));
     });
-    document.documentElement.lang = _talosLangCode();
+    const code = _talosLangCode();
+    document.documentElement.lang = code;
+    document.documentElement.dir = (code === 'ar') ? 'rtl' : 'ltr';
 }

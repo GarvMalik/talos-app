@@ -102,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const muted = _isMuted();
             muteBtn.querySelector('.material-symbols-rounded').textContent = muted ? 'volume_off' : 'volume_up';
             muteBtn.title = muted ? 'Unmute AI voice' : 'Mute AI voice';
+            muteBtn.setAttribute('aria-label', muteBtn.title);
+            muteBtn.setAttribute('aria-pressed', String(muted));
             muteBtn.classList.toggle('muted', muted);
         };
         updateMuteIcon();
@@ -189,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const setup = document.getElementById('welcomeSetup');
             const input = document.getElementById('welcomeKeyInput');
             setup.classList.remove('hidden');
+            setTimeout(() => input.focus(), 100);
 
             document.getElementById('btnWelcomeStart').addEventListener('click', () => {
                 const key = input.value.trim();
@@ -614,7 +617,7 @@ function _exitVoiceMode() {
         chatHistoryDOM.innerHTML += `
             <div class="ai-message-row mt-10">
                 <div class="message ai-message mb-0">${lastMessage}</div>
-                <button id="${msgId}" class="btn-speaker" data-text="${lastMessage.replace(/"/g, '&quot;')}" title="Play Audio">
+                <button id="${msgId}" class="btn-speaker" data-text="${lastMessage.replace(/"/g, '&quot;')}" title="Play Audio" aria-label="Play this message aloud">
                     <span class="material-symbols-rounded">volume_up</span>
                 </button>
             </div>`;
@@ -822,7 +825,7 @@ async function fetchGroqResponse() {
         chatHistoryDOM.innerHTML += `
             <div class="ai-message-row mt-10">
                 <div class="message ai-message mb-0">${aiMessage}</div>
-                <button id="${msgId}" class="btn-speaker" data-text="${aiMessage.replace(/"/g, '&quot;')}" title="Play Audio">
+                <button id="${msgId}" class="btn-speaker" data-text="${aiMessage.replace(/"/g, '&quot;')}" title="Play Audio" aria-label="Play this message aloud">
                     <span class="material-symbols-rounded">volume_up</span>
                 </button>
             </div>`;
