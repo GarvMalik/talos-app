@@ -109,6 +109,32 @@
             </div>
 
             <div class="settings-group">
+                <h3 class="settings-title">AI Engine</h3>
+                <div class="settings-card">
+                    <div class="settings-row settings-row-column">
+                        <div class="settings-key-header">
+                            <span>Groq API Key</span>
+                            <span class="settings-badge">Required</span>
+                        </div>
+
+                        <div id="groqStateEmpty" style="width:100%; display:none;">
+                            <input type="password" id="groqKeyInput" class="settings-key-input" placeholder="Paste your free Groq API key" autocomplete="off">
+                            <button class="btn-action-light btn-green-text w-full-padded" id="btnSaveGroqKey" style="margin-top:10px;">
+                                Save Key
+                            </button>
+                        </div>
+
+                        <div id="groqStateSaved" style="width:100%; display:none;">
+                            <div class="settings-key-saved-row">
+                                <span class="settings-key-masked">••••••••••••••••••••</span>
+                                <button class="settings-key-edit-btn" id="btnEditGroqKey">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-group">
                 <h3 class="settings-title">Privacy</h3>
                 <div class="settings-card">
                     <div class="settings-row">
@@ -192,6 +218,29 @@
         // Close modal on backdrop click
         modal?.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.add('hidden');
+        });
+
+        // Groq AI key (same two-state pattern; Edit re-opens the input)
+        const groqEmpty = document.getElementById('groqStateEmpty');
+        const groqSaved = document.getElementById('groqStateSaved');
+        function refreshGroqState(editing) {
+            const has = !!localStorage.getItem('talosApiKey');
+            groqEmpty.style.display = (has && !editing) ? 'none' : 'block';
+            groqSaved.style.display = (has && !editing) ? 'block' : 'none';
+        }
+        refreshGroqState(false);
+
+        document.getElementById('btnSaveGroqKey')?.addEventListener('click', () => {
+            const val = document.getElementById('groqKeyInput').value.trim();
+            if (!val) return;
+            localStorage.setItem('talosApiKey', val);
+            document.getElementById('groqKeyInput').value = '';
+            refreshGroqState(false);
+        });
+
+        document.getElementById('btnEditGroqKey')?.addEventListener('click', () => {
+            refreshGroqState(true);
+            document.getElementById('groqKeyInput').focus();
         });
     });
     </script>

@@ -99,6 +99,23 @@
         </div>
 
     </div>
+    <!-- One-time welcome: shown only when no AI key is saved yet -->
+    <div id="welcomeSetup" class="modal-overlay hidden">
+        <div class="modal-box welcome-box">
+            <span class="material-symbols-rounded welcome-icon">health_and_safety</span>
+            <h3>Welcome to Talos</h3>
+            <p>Talos runs on the free Groq AI service. Paste your key below — it's stored only on this device and takes one minute to create.</p>
+            <input type="password" id="welcomeKeyInput" class="settings-key-input" placeholder="Paste your Groq API key" autocomplete="off">
+            <button class="modal-btn modal-btn-primary w-full-padded" id="btnWelcomeStart" style="margin-top:14px;">
+                Start My Screening
+            </button>
+            <a class="welcome-link" href="https://console.groq.com/keys" target="_blank" rel="noopener">
+                Get a free key at console.groq.com →
+            </a>
+            <button class="welcome-back" data-navigate="../index.html">Back to home</button>
+        </div>
+    </div>
+
 <script src="../js/error-handler.js"></script>
     <script src="../js/global.js"></script>
     <script src="../js/tts.js"></script>

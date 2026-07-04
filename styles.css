@@ -1192,3 +1192,23 @@ a.btn-card-action, a.btn-danger { text-decoration: none; }
     .checkmark { box-shadow: inset 0 0 0 60px #386641; }
     .checkmark-circle, .checkmark-check { stroke-dashoffset: 0; }
 }
+
+/* =========================================
+   23. WELCOME SETUP (first-run key screen)
+   ========================================= */
+.welcome-box { text-align: center; max-width: 420px; }
+.welcome-icon { font-size: 52px; color: #386641; display: block; margin: 0 auto 10px; }
+.welcome-box h3 { font-size: 24px; margin-bottom: 10px; }
+.welcome-box p { font-size: 15px; color: #666; line-height: 1.55; margin-bottom: 18px; }
+.welcome-box .settings-key-input { width: 100%; }
+.welcome-link {
+    display: block; margin-top: 14px;
+    color: #386641; font-weight: 600; font-size: 14px;
+    text-decoration: none;
+}
+.welcome-link:hover { text-decoration: underline; }
+.welcome-back {
+    background: none; border: none; cursor: pointer;
+    margin-top: 16px; color: #999; font-size: 14px; font-weight: 500;
+}
+.welcome-back:hover { color: #386641; }

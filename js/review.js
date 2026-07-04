@@ -2,18 +2,9 @@
    REVIEW LOGIC (Summary Generation & Modal)
    ========================================= */
 
-// Pull the key from memory, or ask the user for it
+// Key is set during the chat welcome screen or in Settings — never prompt().
+// This page is only reachable after a completed chat, so a key normally exists.
 let GROQ_API_KEY = localStorage.getItem('talosApiKey');
-
-if (!GROQ_API_KEY) {
-    const userInput = prompt("Welcome to the Talos Prototype! To power the AI, please paste your free Groq API Key here:");
-    if (userInput) {
-        localStorage.setItem('talosApiKey', userInput.trim());
-        GROQ_API_KEY = userInput.trim();
-    } else {
-        alert("The AI requires an API key to function. Please refresh the page and try again.");
-    }
-}
 let currentSummaryRecord = null; // Temporarily holds the summary
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -59,6 +50,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rawHistory = localStorage.getItem('talosChatHistory');
     if (!rawHistory) {
         summaryList.innerHTML = '<li>No chat history found. Please complete the screening first.</li>';
+        return;
+    }
+
+    if (!GROQ_API_KEY) {
+        summaryList.innerHTML = '<li>No AI key found on this device. Start a screening from the home screen to set one up.</li>';
         return;
     }
 
@@ -137,6 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentSummaryRecord = {
                 id: newPatientId,
                 date: new Date().toLocaleDateString(),
+                savedAt: Date.now(),
                 title: chatTitle,
                 notes: bullets,
                 patientName: intakeData.patientName || null,

@@ -1,13 +1,5 @@
+// Key is set via the welcome screen (first run) or Settings — never prompt().
 let GROQ_API_KEY = localStorage.getItem('talosApiKey');
-if (!GROQ_API_KEY) {
-    const userInput = prompt("Welcome to Talos! Please paste your free Groq API Key:");
-    if (userInput) {
-        localStorage.setItem('talosApiKey', userInput.trim());
-        GROQ_API_KEY = userInput.trim();
-    } else {
-        alert("The AI requires an API key. Please refresh and try again.");
-    }
-}
 
 
 let conversationHistory = [];
@@ -183,11 +175,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Auto-start screening
-    if (chatHistory) {
+    // Auto-start screening — or show the one-time welcome setup if no AI key yet
+    function startScreening() {
         chatHistory.innerHTML = '';
         conversationHistory.push({ role: 'user', content: 'Hi, I am ready to start my screening.' });
         fetchGroqResponse();
+    }
+
+    if (chatHistory) {
+        if (GROQ_API_KEY) {
+            startScreening();
+        } else {
+            const setup = document.getElementById('welcomeSetup');
+            const input = document.getElementById('welcomeKeyInput');
+            setup.classList.remove('hidden');
+
+            document.getElementById('btnWelcomeStart').addEventListener('click', () => {
+                const key = input.value.trim();
+                if (!key) { input.focus(); return; }
+                localStorage.setItem('talosApiKey', key);
+                GROQ_API_KEY = key;
+                setup.classList.add('hidden');
+                startScreening();
+            });
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('btnWelcomeStart').click();
+            });
+        }
     }
 });
 

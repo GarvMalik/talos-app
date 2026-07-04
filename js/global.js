@@ -73,9 +73,33 @@ function initDefaultSettings() {
     }
 }
 
+// 6. Enforce the 30-day retention promise shown on the Past Summaries page.
+// Runs on every page load. Records saved before this feature existed have no
+// savedAt — they get stamped now and start their 30 days from today.
+function pruneOldSummaries() {
+    const raw = localStorage.getItem('talosPastSummaries');
+    if (!raw) return;
+    let records;
+    try { records = JSON.parse(raw); } catch (e) { return; }
+    if (!Array.isArray(records)) return;
+
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    let changed = false;
+
+    records.forEach(r => {
+        if (!r.savedAt) { r.savedAt = now; changed = true; }
+    });
+    const kept = records.filter(r => now - r.savedAt < THIRTY_DAYS);
+    if (kept.length !== records.length) changed = true;
+
+    if (changed) localStorage.setItem('talosPastSummaries', JSON.stringify(kept));
+}
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initDefaultSettings();
+    pruneOldSummaries();
     applySavedSettings();
     updateGreeting();
     window.dispatchEvent(new Event('scroll'));
