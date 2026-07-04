@@ -51,9 +51,10 @@ function updateGreeting() {
     const hour = new Date().getHours();
     const greetingElement = document.getElementById('greetingText');
     if (greetingElement) {
-        if (hour < 12) greetingElement.innerText = 'Good Morning!';
-        else if (hour < 18) greetingElement.innerText = 'Good Afternoon!';
-        else greetingElement.innerText = 'Good Evening!';
+        const key = hour < 12 ? 'greet_morning' : hour < 18 ? 'greet_afternoon' : 'greet_evening';
+        greetingElement.innerText = (typeof t === 'function')
+            ? t(key)
+            : { greet_morning: 'Good Morning!', greet_afternoon: 'Good Afternoon!', greet_evening: 'Good Evening!' }[key];
     }
 }
 
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDefaultSettings();
     pruneOldSummaries();
     applySavedSettings();
+    if (typeof applyTranslations === 'function') applyTranslations();
     updateGreeting();
     window.dispatchEvent(new Event('scroll'));
 });

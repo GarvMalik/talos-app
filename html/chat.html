@@ -37,11 +37,11 @@
         <div class="chat-input-wrapper" id="inputWrapper">
             <div id="activeInputArea">
                 <div class="quick-replies">
-                    <button class="btn-quick-reply" data-quick-reply="Prefer not to answer">Prefer not to answer</button>
-                    <button class="btn-quick-reply" data-quick-reply="Skip this question">Skip this question</button>
+                    <button class="btn-quick-reply" data-quick-reply="Prefer not to answer" data-i18n="prefer_not">Prefer not to answer</button>
+                    <button class="btn-quick-reply" data-quick-reply="Skip this question" data-i18n="skip_question">Skip this question</button>
                 </div>
                 <div class="input-box">
-                    <textarea id="chatInput" rows="1" placeholder="Type your answer..."></textarea>
+                    <textarea id="chatInput" rows="1" placeholder="Type your answer..." data-i18n-ph="type_answer"></textarea>
                     <button class="btn-mic" id="micButton" title="Voice input">
                         <span class="material-symbols-rounded">mic</span>
                     </button>
@@ -54,7 +54,7 @@
 
         <!-- Review button (hidden until complete) -->
         <button id="reviewButton" class="btn-primary w-full-btn mb-24 hidden" data-navigate="review.html">
-            <span class="text-large font-bold">Review My Summary</span>
+            <span class="text-large font-bold" data-i18n="review_summary_btn">Review My Summary</span>
         </button>
 
     </div>
@@ -117,6 +117,7 @@
     </div>
 
 <script src="../js/error-handler.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/global.js"></script>
     <script src="../js/tts.js"></script>
     <script src="../js/chat.js"></script>

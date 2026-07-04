@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
             container.innerHTML = `
                 <div class="support-card" style="text-align: center; padding: 40px 20px;">
                     <span class="material-symbols-rounded" style="font-size: 48px; color: #aaa; margin-bottom: 12px;">inbox</span>
-                    <p style="margin: 0;">No past summaries found.</p>
-                    <p style="font-size: 16px; margin-top: 8px;">Complete a screening to see your history here.</p>
+                    <p style="margin: 0;">${t('past_empty')}</p>
+                    <p style="font-size: 16px; margin-top: 8px;">${t('past_empty_sub')}</p>
                 </div>
             `;
             return;
@@ -56,13 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${notesHTML}
                         <div class="summary-actions">
                             <button class="btn-share-record" data-index="${index}">
-                                <span class="material-symbols-rounded">ios_share</span>Share
+                                <span class="material-symbols-rounded">ios_share</span>${t('share')}
                             </button>
                             <button class="btn-pdf-record" data-index="${index}">
                                 <span class="material-symbols-rounded">download</span>PDF
                             </button>
                         </div>
-                        <button class="btn-outline-danger btn-delete-record" data-index="${index}">Delete this record from device</button>
+                        <button class="btn-outline-danger btn-delete-record" data-index="${index}">${t('delete_record')}</button>
                     </div>
                 </div>
             `;

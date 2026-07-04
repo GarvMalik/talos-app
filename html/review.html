@@ -13,23 +13,23 @@
             <button class="back-btn" data-navigate="chat.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
-            <h1>Review Summary</h1>
+            <h1 data-i18n="review_title">Review Summary</h1>
             <div class="spacer"></div> 
         </header>
 
         <main class="review-main" style="padding: 0 24px; overflow-y: auto;">
             <div class="review-intro">
-                <p><strong class="text-green">Screening Complete.</strong> Review your summary below — on the next screen you can share it with your doctor by QR code, link, or PDF.</p>
+                <p><strong class="text-green" data-i18n="review_done">Screening Complete.</strong> <span data-i18n="review_intro_rest">Review your summary below — on the next screen you can share it with your doctor by QR code, link, or PDF.</span></p>
             </div>
 
             <div class="intake-card">
                 <div class="intake-header">
-                    <h3>Clinical Intake Notes</h3>
-                    <p><strong>Patient ID:</strong> <span id="patientIdDisplay">Generating...</span></p>
+                    <h3 data-i18n="clinical_notes">Clinical Intake Notes</h3>
+                    <p><strong data-i18n="patient_id_label">Patient ID:</strong> <span id="patientIdDisplay">Generating...</span></p>
                 </div>
-                
+
                <div class="intake-body">
-                    <h4>Question & Answer</h4>
+                    <h4 data-i18n="qa_heading">Question & Answer</h4>
                     <ul class="intake-list" id="summaryList">
                         <li class="italic-gray">Analyzing chat history and generating clinical notes...</li>
                     </ul>
@@ -38,13 +38,13 @@
 
             <div class="review-actions">
     <button class="btn-action-light" id="btnDownloadPDF">
-        <span class="material-symbols-rounded">download</span> Download PDF
+        <span class="material-symbols-rounded">download</span> <span data-i18n="download_pdf">Download PDF</span>
     </button>
-    <button class="btn-action-light btn-red-text" id="btnShowDeleteModal">
+    <button class="btn-action-light btn-red-text" id="btnShowDeleteModal" data-i18n="delete_start_over">
         Delete All And Start Over
     </button>
     <button class="btn-primary w-full-btn-rounded mb-0" id="btnSubmitSummary">
-        <span class="text-large font-bold">Looks Good — Continue</span>
+        <span class="text-large font-bold" data-i18n="looks_good">Looks Good — Continue</span>
     </button>
 </div>
         </main>
@@ -52,27 +52,28 @@
 
     <div id="deleteModal" class="modal-overlay hidden">
         <div class="modal-box">
-            <h3>Delete this chat?</h3>
-            
+            <h3 data-i18n="del_title">Delete this chat?</h3>
+
             <div id="modalStep1">
-                <p>Are you sure you want to delete this screening? This action cannot be undone.</p>
+                <p data-i18n="del_msg">Are you sure you want to delete this screening? This action cannot be undone.</p>
                 <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-danger" id="btnConfirmDelete">Yes, Delete</button>
-                    <button class="modal-btn modal-btn-outline" id="btnCancelDelete">Cancel</button>
+                    <button class="modal-btn modal-btn-danger" id="btnConfirmDelete" data-i18n="del_yes">Yes, Delete</button>
+                    <button class="modal-btn modal-btn-outline" id="btnCancelDelete" data-i18n="cancel">Cancel</button>
                 </div>
             </div>
 
             <div id="modalStep2" class="hidden">
-                <p>Chat successfully deleted. What would you like to do next?</p>
+                <p data-i18n="del_done">Chat successfully deleted. What would you like to do next?</p>
                 <div class="modal-buttons">
-                    <button class="modal-btn modal-btn-primary" data-navigate="../index.html">Go to Home Screen</button>
-                    <button class="modal-btn modal-btn-outline" data-navigate="chat.html">Start Screening Again</button>
+                    <button class="modal-btn modal-btn-primary" data-navigate="../index.html" data-i18n="go_home">Go to Home Screen</button>
+                    <button class="modal-btn modal-btn-outline" data-navigate="chat.html" data-i18n="start_again">Start Screening Again</button>
                 </div>
             </div>
         </div>
     </div>
 <script src="../js/error-handler.js"></script>
 <script src="../js/pdf-generator.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/global.js"></script>
     <script src="../js/review.js"></script>
 </body>

@@ -680,7 +680,9 @@ function setInputState(isLocked) {
     const micButton = document.getElementById('micButton');
     if (chatInput) {
         chatInput.disabled = isLocked;
-        chatInput.placeholder = isLocked ? 'Talos is typing...' : 'Type your answer...';
+        chatInput.placeholder = (typeof t === 'function')
+            ? (isLocked ? t('talos_typing') : t('type_answer'))
+            : (isLocked ? 'Talos is typing...' : 'Type your answer...');
     }
     if (sendBtn)   sendBtn.disabled = isLocked;
     if (micButton) micButton.disabled = isLocked;

@@ -12,7 +12,7 @@
 <body>
     <div class="mobile-container">
         <header class="app-header" style="justify-content: center;">
-            <h1>Screening Complete</h1>
+            <h1 data-i18n="success_title">Screening Complete</h1>
         </header>
 
         <main>
@@ -22,8 +22,8 @@
                     <circle class="checkmark-circle" cx="26" cy="26" r="24" fill="none"/>
                     <path class="checkmark-check" fill="none" d="M14 27 l8 8 l16 -16"/>
                 </svg>
-                <h2>All done — great job.</h2>
-                <p id="completeSubtitle">Your summary is saved securely on this device. Share it with your doctor whenever you're ready.</p>
+                <h2 data-i18n="success_headline">All done — great job.</h2>
+                <p id="completeSubtitle" data-i18n="success_sub">Your summary is saved securely on this device. Share it with your doctor whenever you're ready.</p>
             </div>
 
             <!-- Record chip -->
@@ -37,44 +37,44 @@
 
             <!-- Handoff: QR for the doctor -->
             <div class="settings-group" id="qrGroup">
-                <h3 class="settings-title">Show This To Your Doctor</h3>
+                <h3 class="settings-title" data-i18n="show_doctor">Show This To Your Doctor</h3>
                 <div class="settings-card qr-card">
                     <div id="qrcode" class="qr-box" role="img" aria-label="QR code containing your screening summary"></div>
-                    <p class="qr-hint">Your doctor scans this with any phone camera — the summary opens instantly as a clinical document. Nothing is uploaded; the data travels inside the code itself.</p>
+                    <p class="qr-hint" data-i18n="qr_hint">Your doctor scans this with any phone camera — the summary opens instantly as a clinical document. Nothing is uploaded; the data travels inside the code itself.</p>
                 </div>
             </div>
 
             <!-- Other share options -->
             <div class="settings-group">
-                <h3 class="settings-title">Or Share It Your Way</h3>
+                <h3 class="settings-title" data-i18n="share_your_way">Or Share It Your Way</h3>
                 <div class="settings-card">
                     <button class="share-row" id="btnShareLink">
                         <span class="material-symbols-rounded">ios_share</span>
                         <div class="share-row-text">
-                            <h4>Share Link</h4>
-                            <p>Send via any app you already use.</p>
+                            <h4 data-i18n="share_link">Share Link</h4>
+                            <p data-i18n="share_link_sub">Send via any app you already use.</p>
                         </div>
                     </button>
                     <div class="settings-divider"></div>
                     <button class="share-row" id="btnCopyLink">
                         <span class="material-symbols-rounded" id="copyIcon">content_copy</span>
                         <div class="share-row-text">
-                            <h4 id="copyLabel">Copy Link</h4>
-                            <p>Paste it into an email or patient portal.</p>
+                            <h4 id="copyLabel" data-i18n="copy_link">Copy Link</h4>
+                            <p data-i18n="copy_link_sub">Paste it into an email or patient portal.</p>
                         </div>
                     </button>
                     <div class="settings-divider"></div>
                     <button class="share-row" id="btnDownloadPDF">
                         <span class="material-symbols-rounded">download</span>
                         <div class="share-row-text">
-                            <h4>Download PDF</h4>
-                            <p>A printable clinical document.</p>
+                            <h4 data-i18n="download_pdf">Download PDF</h4>
+                            <p data-i18n="pdf_sub">A printable clinical document.</p>
                         </div>
                     </button>
                 </div>
             </div>
 
-            <button class="btn-action-light btn-green-text w-full-padded" data-navigate="../index.html" style="margin-top: 8px;">
+            <button class="btn-action-light btn-green-text w-full-padded" data-navigate="../index.html" style="margin-top: 8px;" data-i18n="return_home">
                 Return To Home Screen
             </button>
         </main>
@@ -82,6 +82,7 @@
 
     <script src="../js/error-handler.js"></script>
     <script src="../js/pdf-generator.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/global.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -140,10 +141,10 @@
         document.getElementById('btnCopyLink').addEventListener('click', async () => {
             await navigator.clipboard.writeText(viewerURL);
             document.getElementById('copyIcon').textContent = 'check';
-            document.getElementById('copyLabel').textContent = 'Copied!';
+            document.getElementById('copyLabel').textContent = t('copied');
             setTimeout(() => {
                 document.getElementById('copyIcon').textContent = 'content_copy';
-                document.getElementById('copyLabel').textContent = 'Copy Link';
+                document.getElementById('copyLabel').textContent = t('copy_link');
             }, 2000);
         });
 

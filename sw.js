@@ -10,13 +10,14 @@
    ========================================= */
 
 const CACHE_PREFIX = 'talos-care';
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
     '/talos-app/index.html',
     '/talos-app/styles.css',
     '/talos-app/js/global.js',
+    '/talos-app/js/i18n.js',
     '/talos-app/js/chat.js',
     '/talos-app/js/review.js',
     '/talos-app/js/settings.js',

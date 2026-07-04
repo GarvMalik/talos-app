@@ -13,50 +13,51 @@
             <button class="back-btn" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
-            <h1>Before We Start</h1>
+            <h1 data-i18n="intake_title">Before We Start</h1>
             <div class="spacer"></div>
         </header>
 
         <main>
             <div class="greeting-section">
-                <p>These details go to your doctor along with your screening summary, so the AI can focus purely on how you're feeling. Every field is optional.</p>
+                <p data-i18n="intake_intro">These details go to your doctor along with your screening summary, so the AI can focus purely on how you're feeling. Every field is optional.</p>
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">About You</h3>
+                <h3 class="settings-title" data-i18n="intake_about_you">About You</h3>
                 <div class="settings-card">
                     <div class="settings-row settings-row-column">
-                        <input type="text" id="intakeName" class="settings-key-input" placeholder="Full name (optional)" autocomplete="name" style="margin-bottom:8px;">
-                        <input type="number" id="intakeAge" class="settings-key-input" placeholder="Age (optional)" min="1" max="120">
+                        <input type="text" id="intakeName" class="settings-key-input" placeholder="Full name (optional)" data-i18n-ph="ph_name" autocomplete="name" style="margin-bottom:8px;">
+                        <input type="number" id="intakeAge" class="settings-key-input" placeholder="Age (optional)" data-i18n-ph="ph_age" min="1" max="120">
                     </div>
                 </div>
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Medical Basics</h3>
+                <h3 class="settings-title" data-i18n="intake_medical">Medical Basics</h3>
                 <div class="settings-card">
                     <div class="settings-row settings-row-column">
-                        <input type="text" id="intakeMedications" class="settings-key-input" placeholder="Current medications, e.g. none" autocomplete="off" style="margin-bottom:8px;">
-                        <input type="text" id="intakeAllergies" class="settings-key-input" placeholder="Allergies, e.g. penicillin, none" autocomplete="off">
+                        <input type="text" id="intakeMedications" class="settings-key-input" placeholder="Current medications, e.g. none" data-i18n-ph="ph_medications" autocomplete="off" style="margin-bottom:8px;">
+                        <input type="text" id="intakeAllergies" class="settings-key-input" placeholder="Allergies, e.g. penicillin, none" data-i18n-ph="ph_allergies" autocomplete="off">
                     </div>
                 </div>
             </div>
 
             <button class="btn-primary" id="btnStartScreening">
                 <div class="btn-text">
-                    <h3>Continue to Screening</h3>
-                    <p>Takes about 3-5 minutes.</p>
+                    <h3 data-i18n="intake_continue">Continue to Screening</h3>
+                    <p data-i18n="takes_minutes">Takes about 3-5 minutes.</p>
                 </div>
                 <span class="material-symbols-rounded">arrow_forward</span>
             </button>
 
             <div class="settings-row justify-center">
-                <button class="btn-action-light" id="btnSkipIntake">Skip for now</button>
+                <button class="btn-action-light" id="btnSkipIntake" data-i18n="intake_skip">Skip for now</button>
             </div>
         </main>
     </div>
 
     <script src="../js/error-handler.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/global.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {

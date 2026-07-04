@@ -24,13 +24,13 @@
         <main>
             <div class="greeting-section">
                 <h2 id="greetingText">Good Morning!</h2>
-                <p>How Can Talos Assist You Today?</p>
+                <p data-i18n="home_tagline">How Can Talos Assist You Today?</p>
             </div>
 
             <button class="btn-primary" data-navigate="html/intake.html">
                 <div class="btn-text">
-                    <h3>Start Screening</h3>
-                    <p>Takes about 3-5 minutes.</p>
+                    <h3 data-i18n="start_screening">Start Screening</h3>
+                    <p data-i18n="takes_minutes">Takes about 3-5 minutes.</p>
                 </div>
                 <span class="material-symbols-rounded">assignment</span>
             </button>
@@ -38,12 +38,12 @@
             <div class="secondary-actions">
                 <button class="btn-secondary btn-past" data-navigate="html/past-summaries.html">
                     <span class="material-symbols-rounded">history</span>
-                    <h3>Past<br>Summaries</h3>
+                    <h3 data-i18n="past_summaries">Past Summaries</h3>
                 </button>
 
                 <button class="btn-secondary btn-emergency" data-navigate="html/emergency.html">
                     <span class="material-symbols-rounded">emergency</span>
-                    <h3>Emergency<br>Protocols</h3>
+                    <h3 data-i18n="emergency_protocols">Emergency Protocols</h3>
                 </button>
             </div>
         </main>
@@ -51,6 +51,7 @@
     
 <script src="js/error-handler.js"></script>
 <script src="js/pdf-generator.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/global.js"></script>
   
   <script>

@@ -13,17 +13,17 @@
             <button class="back-btn" data-navigate="../index.html">
                 <span class="material-symbols-rounded">arrow_back_ios_new</span>
             </button>
-            <h1>Settings</h1>
+            <h1 data-i18n="set_title">Settings</h1>
             <div class="spacer"></div>
         </header>
 
         <main>
 
             <div class="settings-group">
-                <h3 class="settings-title">Display</h3>
+                <h3 class="settings-title" data-i18n="set_display">Display</h3>
                 <div class="settings-card">
                     <div class="settings-row">
-                        <span>Text Size</span>
+                        <span data-i18n="set_text_size">Text Size</span>
                         <div class="size-selector">
                             <span data-size="S">S</span>
                             <span class="active" data-size="M">M</span>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row">
-                        <span>High Contrast</span>
+                        <span data-i18n="set_contrast">High Contrast</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="contrastToggle">
                             <span class="slider"></span>
@@ -42,10 +42,10 @@
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Voice</h3>
+                <h3 class="settings-title" data-i18n="set_voice">Voice</h3>
                 <div class="settings-card">
                     <div class="settings-row">
-                        <span>Mute AI Voice</span>
+                        <span data-i18n="set_mute">Mute AI Voice</span>
                         <label class="toggle-switch">
                             <input type="checkbox" id="silentModeToggle">
                             <span class="slider"></span>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="settings-divider"></div>
                     <div class="settings-row">
-                        <span>Language</span>
+                        <span data-i18n="set_language">Language</span>
                         <select id="languageSelect" class="settings-dropdown">
                             <option value="en-US">English</option>
                             <option value="fi-FI">Suomi</option>
@@ -135,7 +135,7 @@
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Privacy</h3>
+                <h3 class="settings-title" data-i18n="set_privacy">Privacy</h3>
                 <div class="settings-card">
                     <div class="settings-row">
                         <span>Consent Agreement</span>
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <button class="btn-delete" id="btnDeleteLocalData">Delete All Data</button>
+            <button class="btn-delete" id="btnDeleteLocalData" data-i18n="delete_all">Delete All Data</button>
 
         </main>
     </div>
@@ -245,6 +245,7 @@
     });
     </script>
 <script src="../js/error-handler.js"></script>
+    <script src="../js/i18n.js"></script>
     <script src="../js/global.js"></script>
     <script src="../js/tts.js"></script>
     <script src="../js/settings.js"></script>

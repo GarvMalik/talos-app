@@ -283,7 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const langSelect = document.getElementById('languageSelect');
     if (langSelect) {
         langSelect.value = localStorage.getItem('ttsLanguage') || 'en-US';
-        langSelect.addEventListener('change', (e) => localStorage.setItem('ttsLanguage', e.target.value));
+        langSelect.addEventListener('change', (e) => {
+            localStorage.setItem('ttsLanguage', e.target.value);
+            // Retranslate the visible UI immediately
+            if (typeof applyTranslations === 'function') applyTranslations();
+        });
     }
 
     const voiceSelect = document.getElementById('voiceTypeSelect');
