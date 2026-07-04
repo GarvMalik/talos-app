@@ -1043,3 +1043,152 @@ body.high-contrast .mode-switch-divider { color: #555; }
     background-color: rgba(188, 71, 73, 0.1);
     border-radius: 50%;
 }
+
+/* =========================================
+   20. SCREENING-COMPLETE PAGE (handoff hub)
+   ========================================= */
+.complete-hero {
+    text-align: center;
+    padding: 28px 16px 24px;
+}
+.complete-hero h2 { font-size: 26px; color: #2c2c2c; margin: 18px 0 8px; }
+.complete-hero p  { font-size: 16px; color: #666; line-height: 1.5; max-width: 480px; margin: 0 auto; }
+
+/* Draw-on checkmark */
+.checkmark {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto;
+    stroke-width: 3;
+    stroke: #fff;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0 0 0 #386641;
+    animation: checkFill 0.4s ease-in-out 0.4s forwards, checkScale 0.3s ease-in-out 0.9s both;
+}
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke: #386641;
+    stroke-width: 3;
+    animation: checkStroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke-width: 4;
+    stroke-linecap: round;
+    animation: checkStroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.7s forwards;
+}
+@keyframes checkStroke { 100% { stroke-dashoffset: 0; } }
+@keyframes checkScale  { 0%, 100% { transform: none; } 50% { transform: scale3d(1.08, 1.08, 1); } }
+@keyframes checkFill   { 100% { box-shadow: inset 0 0 0 60px #386641; } }
+
+.record-chip { padding: 18px 20px; margin-bottom: 20px; }
+.record-chip-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.record-chip h3 { font-size: 18px; color: #2c2c2c; }
+
+.qr-card { display: flex; flex-direction: column; align-items: center; padding: 24px 20px; }
+.qr-box {
+    background: #fff;
+    padding: 14px;
+    border-radius: 16px;
+    border: 2px solid #38664122;
+    display: inline-block;
+}
+.qr-box img { display: block; }
+.qr-hint { font-size: 14px; color: #666; line-height: 1.5; text-align: center; margin-top: 16px; max-width: 420px; }
+
+/* Share option rows */
+.share-row {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%;
+    background: none; border: none;
+    padding: 16px 4px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 12px;
+}
+.share-row:hover { background: rgba(56, 102, 65, 0.06); }
+.share-row:disabled { opacity: 0.4; cursor: default; }
+.share-row .material-symbols-rounded { font-size: 26px; color: #386641; }
+.share-row-text h4 { font-size: 16px; color: #2c2c2c; margin-bottom: 2px; }
+.share-row-text p  { font-size: 13.5px; color: #888; }
+
+/* =========================================
+   21. CHAT POLISH — message entrances & typing dots
+   ========================================= */
+.message { animation: msgIn 0.28s ease-out both; }
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.typing-indicator {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 14px 18px;
+}
+.typing-indicator .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #38664188;
+    animation: typingBounce 1.2s infinite ease-in-out;
+}
+.typing-indicator .dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-indicator .dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* =========================================
+   22. STAGGERED PAGE ENTRANCES (non-chat pages)
+   ========================================= */
+body:not(.chat-layout) main > * {
+    animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+body:not(.chat-layout) main > *:nth-child(1) { animation-delay: 0.05s; }
+body:not(.chat-layout) main > *:nth-child(2) { animation-delay: 0.12s; }
+body:not(.chat-layout) main > *:nth-child(3) { animation-delay: 0.19s; }
+body:not(.chat-layout) main > *:nth-child(4) { animation-delay: 0.26s; }
+body:not(.chat-layout) main > *:nth-child(5) { animation-delay: 0.33s; }
+body:not(.chat-layout) main > *:nth-child(n+6) { animation-delay: 0.4s; }
+@keyframes riseIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card & button touch feedback */
+.summary-card, .support-card, .settings-card { transition: transform 0.15s ease, box-shadow 0.2s ease; }
+.summary-card:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.06); }
+.btn-primary, .btn-secondary, .btn-danger { transition: transform 0.12s ease, filter 0.2s ease; }
+.btn-primary:hover, .btn-secondary:hover, .btn-danger:hover { filter: brightness(1.04); }
+.btn-primary:active, .btn-secondary:active, .btn-danger:active { transform: scale(0.98); }
+
+/* Per-record actions on Past Summaries */
+.summary-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.summary-actions button {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1.5px solid #38664144;
+    background: none; color: #386641;
+    font-weight: 600; font-size: 14px;
+    padding: 9px 16px; border-radius: 20px;
+    cursor: pointer;
+}
+.summary-actions button:hover { background: rgba(56, 102, 65, 0.08); }
+.summary-actions .material-symbols-rounded { font-size: 18px; }
+
+/* Emergency page: call buttons are real links now */
+a.btn-card-action, a.btn-danger { text-decoration: none; }
+
+/* Respect reduced-motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+    body:not(.chat-layout) main > *,
+    .message, .checkmark, .checkmark-circle, .checkmark-check,
+    .typing-indicator .dot {
+        animation: none !important;
+    }
+    .checkmark { box-shadow: inset 0 0 0 60px #386641; }
+    .checkmark-circle, .checkmark-check { stroke-dashoffset: 0; }
+}

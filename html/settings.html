@@ -109,24 +109,6 @@
             </div>
 
             <div class="settings-group">
-                <h3 class="settings-title">Doctor Email Delivery</h3>
-                <div class="settings-card">
-                    <div class="settings-row settings-row-column">
-                        <div class="settings-key-header">
-                            <span>EmailJS Credentials</span>
-                            <span class="settings-badge" id="emailjsStatusBadge">Not configured</span>
-                        </div>
-                        <input type="text" id="emailjsServiceInput" class="settings-key-input" placeholder="Service ID" autocomplete="off" style="margin-bottom:8px;">
-                        <input type="text" id="emailjsTemplateInput" class="settings-key-input" placeholder="Template ID" autocomplete="off" style="margin-bottom:8px;">
-                        <input type="password" id="emailjsPublicKeyInput" class="settings-key-input" placeholder="Public Key" autocomplete="off">
-                        <button class="btn-action-light btn-green-text w-full-padded" id="btnSaveEmailJS" style="margin-top:10px;">
-                            Save Email Settings
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="settings-group">
                 <h3 class="settings-title">Privacy</h3>
                 <div class="settings-card">
                     <div class="settings-row">
@@ -210,30 +192,6 @@
         // Close modal on backdrop click
         modal?.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.add('hidden');
-        });
-
-        // EmailJS credentials
-        const emailjsBadge = document.getElementById('emailjsStatusBadge');
-        function refreshEmailjsBadge() {
-            const configured = localStorage.getItem('emailjs_service_id')
-                && localStorage.getItem('emailjs_template_id')
-                && localStorage.getItem('emailjs_public_key');
-            emailjsBadge.textContent = configured ? 'Configured' : 'Not configured';
-        }
-        refreshEmailjsBadge();
-
-        document.getElementById('btnSaveEmailJS')?.addEventListener('click', () => {
-            const service  = document.getElementById('emailjsServiceInput').value.trim();
-            const template = document.getElementById('emailjsTemplateInput').value.trim();
-            const pubKey   = document.getElementById('emailjsPublicKeyInput').value.trim();
-            if (!service || !template || !pubKey) return;
-            localStorage.setItem('emailjs_service_id', service);
-            localStorage.setItem('emailjs_template_id', template);
-            localStorage.setItem('emailjs_public_key', pubKey);
-            document.getElementById('emailjsServiceInput').value = '';
-            document.getElementById('emailjsTemplateInput').value = '';
-            document.getElementById('emailjsPublicKeyInput').value = '';
-            refreshEmailjsBadge();
         });
     });
     </script>

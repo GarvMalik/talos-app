@@ -42,15 +42,6 @@
                 </div>
             </div>
 
-            <div class="settings-group">
-                <h3 class="settings-title">Your Doctor</h3>
-                <div class="settings-card">
-                    <div class="settings-row settings-row-column">
-                        <input type="email" id="intakeDoctorEmail" class="settings-key-input" placeholder="Doctor's email (for the summary)" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-
             <button class="btn-primary" id="btnStartScreening">
                 <div class="btn-text">
                     <h3>Continue to Screening</h3>
@@ -75,20 +66,13 @@
         if (saved.age)          document.getElementById('intakeAge').value         = saved.age;
         if (saved.medications)  document.getElementById('intakeMedications').value = saved.medications;
         if (saved.allergies)    document.getElementById('intakeAllergies').value   = saved.allergies;
-        if (saved.doctorEmail)  document.getElementById('intakeDoctorEmail').value = saved.doctorEmail;
 
         document.getElementById('btnStartScreening').addEventListener('click', () => {
-            const email = document.getElementById('intakeDoctorEmail').value.trim();
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                talosErrorHandler?.showErrorBanner('Invalid Email', "Please check your doctor's email address, or leave it empty.");
-                return;
-            }
             const intake = {
                 patientName: document.getElementById('intakeName').value.trim(),
                 age:         document.getElementById('intakeAge').value.trim(),
                 medications: document.getElementById('intakeMedications').value.trim(),
                 allergies:   document.getElementById('intakeAllergies').value.trim(),
-                doctorEmail: email,
                 savedAt:     new Date().toISOString()
             };
             localStorage.setItem('talosIntake', JSON.stringify(intake));

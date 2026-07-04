@@ -10,7 +10,7 @@
    ========================================= */
 
 const CACHE_PREFIX = 'talos-care';
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `${CACHE_PREFIX}-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
@@ -22,9 +22,9 @@ const STATIC_ASSETS = [
     '/talos-app/js/settings.js',
     '/talos-app/js/tts.js',
     '/talos-app/js/pdf-generator.js',
-    '/talos-app/js/emailjs-integration.js',
     '/talos-app/js/error-handler.js',
     '/talos-app/html/intake.html',
+    '/talos-app/html/view-summary.html',
     '/talos-app/html/chat.html',
     '/talos-app/html/review.html',
     '/talos-app/html/settings.html',
@@ -33,7 +33,9 @@ const STATIC_ASSETS = [
     '/talos-app/html/success.html',
     'https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,600,1,0',
     'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
 ];
 
 // =========================================

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Talos Care - Clinical Summary</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <style>
+        /* Standalone styles: this page is opened on the DOCTOR's device,
+           possibly printed — keep it self-contained and print-friendly. */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; }
+        body { background: #f4f4f0; color: #1c221c; padding: 24px 16px; display: flex; justify-content: center; }
+        .doc { background: #fff; max-width: 720px; width: 100%; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden; }
+        .doc-header { background: #386641; color: #fff; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .doc-header h1 { font-size: 20px; font-weight: 600; letter-spacing: 0.3px; }
+        .doc-header .brand { font-size: 12px; opacity: 0.85; text-transform: uppercase; letter-spacing: 2px; }
+        .doc-meta { display: flex; flex-wrap: wrap; gap: 24px; padding: 20px 32px; border-bottom: 1px solid #e4e4de; background: #fbfbf8; }
+        .doc-meta div { min-width: 120px; }
+        .doc-meta .k { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #7a7f7a; margin-bottom: 2px; }
+        .doc-meta .v { font-size: 15px; font-weight: 600; }
+        .doc-body { padding: 28px 32px; }
+        .doc-body h2 { font-size: 16px; color: #386641; margin-bottom: 14px; }
+        .doc-body li { margin: 0 0 12px 18px; line-height: 1.55; font-size: 15px; }
+        .doc-note { padding: 16px 32px 28px; }
+        .doc-note p { font-size: 12.5px; color: #7a7f7a; line-height: 1.5; border-top: 1px solid #e4e4de; padding-top: 14px; }
+        .actions { max-width: 720px; width: 100%; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); padding: 12px 16px; display: flex; gap: 10px; justify-content: flex-end; }
+        .actions button { border: none; border-radius: 24px; padding: 12px 22px; font-size: 14px; font-weight: 600; cursor: pointer; background: #386641; color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.18); }
+        .actions button:hover { background: #2c5234; }
+        .error-state { text-align: center; padding: 64px 32px; }
+        .error-state h2 { color: #386641; margin-bottom: 10px; font-size: 18px; }
+        .error-state p { color: #7a7f7a; font-size: 14px; line-height: 1.6; }
+        body { padding-bottom: 84px; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .doc { box-shadow: none; border-radius: 0; max-width: none; }
+            .actions { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="doc" id="doc">
+        <div class="doc-header">
+            <h1 id="docTitle">Clinical Pre-Screening Summary</h1>
+            <span class="brand">Talos Care</span>
+        </div>
+        <div class="doc-meta" id="docMeta"></div>
+        <div class="doc-body">
+            <h2>Pre-Screening Notes</h2>
+            <ul id="docNotes"></ul>
+        </div>
+        <div class="doc-note">
+            <p>This document was generated on the patient's own device by Talos Care, an AI-assisted
+            pre-screening tool. It contains information reported by the patient and is intended to
+            support — not replace — clinical assessment. No data is stored on any server: the entire
+            summary is encoded in the link itself.</p>
+        </div>
+    </div>
+
+    <div class="actions" id="actions">
+        <button onclick="window.print()">Print / Save as PDF</button>
+    </div>
+
+    <script>
+    (function () {
+        const doc = document.getElementById('doc');
+        const hash = location.hash.slice(1);
+
+        function showError(msg) {
+            doc.innerHTML = `
+                <div class="doc-header"><h1>Clinical Pre-Screening Summary</h1><span class="brand">Talos Care</span></div>
+                <div class="error-state">
+                    <h2>Summary could not be loaded</h2>
+                    <p>${msg}</p>
+                </div>`;
+            document.getElementById('actions').style.display = 'none';
+        }
+
+        if (!hash) {
+            showError('This link contains no summary data. Please ask the patient to share the QR code or link again.');
+            return;
+        }
+
+        let record;
+        try {
+            record = JSON.parse(LZString.decompressFromEncodedURIComponent(hash));
+        } catch (e) { record = null; }
+
+        if (!record || !Array.isArray(record.notes)) {
+            showError('The link appears incomplete or damaged. Please ask the patient to share it again.');
+            return;
+        }
+
+        document.getElementById('docTitle').textContent = record.title || 'Clinical Pre-Screening Summary';
+        document.title = 'Talos Care - ' + (record.title || 'Clinical Summary');
+
+        const meta = [
+            { k: 'Patient ID', v: record.id || 'N/A' },
+            { k: 'Screening Date', v: record.date || 'N/A' },
+        ];
+        if (record.patientName) meta.splice(1, 0, { k: 'Patient Name', v: record.patientName });
+        if (record.age)         meta.push({ k: 'Age', v: record.age });
+        if (record.medications) meta.push({ k: 'Medications', v: record.medications });
+        if (record.allergies)   meta.push({ k: 'Allergies', v: record.allergies });
+
+        const metaEl = document.getElementById('docMeta');
+        const notesEl = document.getElementById('docNotes');
+
+        // textContent everywhere — the payload comes from a shareable URL,
+        // so nothing in it may be treated as HTML.
+        meta.forEach(({ k, v }) => {
+            const wrap = document.createElement('div');
+            const kEl = document.createElement('div'); kEl.className = 'k'; kEl.textContent = k;
+            const vEl = document.createElement('div'); vEl.className = 'v'; vEl.textContent = v;
+            wrap.append(kEl, vEl);
+            metaEl.appendChild(wrap);
+        });
+
+        record.notes.forEach(note => {
+            const li = document.createElement('li');
+            li.textContent = note;
+            notesEl.appendChild(li);
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -54,6 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="summary-content">
                         ${notesHTML}
+                        <div class="summary-actions">
+                            <button class="btn-share-record" data-index="${index}">
+                                <span class="material-symbols-rounded">ios_share</span>Share
+                            </button>
+                            <button class="btn-pdf-record" data-index="${index}">
+                                <span class="material-symbols-rounded">download</span>PDF
+                            </button>
+                        </div>
                         <button class="btn-outline-danger btn-delete-record" data-index="${index}">Delete this record from device</button>
                     </div>
                 </div>
@@ -84,6 +92,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.add('expanded');
                 icon.innerText = 'expand_less'; 
             }
+        }
+
+        // Handle Sharing a Record (same viewer-link handoff as the success page)
+        const shareBtn = e.target.closest('.btn-share-record');
+        if (shareBtn) {
+            e.stopPropagation();
+            const records = JSON.parse(localStorage.getItem('talosPastSummaries')) || [];
+            const record = records[shareBtn.getAttribute('data-index')];
+            if (!record) return;
+            const payload = LZString.compressToEncodedURIComponent(JSON.stringify(record));
+            const viewerURL = new URL('view-summary.html', location.href).href + '#' + payload;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Talos Care - Clinical Summary',
+                    text: `Pre-screening summary (${record.id}, ${record.date})`,
+                    url: viewerURL
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(viewerURL);
+                talosErrorHandler?.showErrorBanner('Link Copied', 'The summary link was copied to your clipboard.');
+            }
+            return;
+        }
+
+        // Handle PDF Download for a Record
+        const pdfBtn = e.target.closest('.btn-pdf-record');
+        if (pdfBtn) {
+            e.stopPropagation();
+            const records = JSON.parse(localStorage.getItem('talosPastSummaries')) || [];
+            const record = records[pdfBtn.getAttribute('data-index')];
+            if (!record) return;
+            talosPDFGenerator.generatePDF(record, record.patientName || null);
+            return;
         }
 
         // Handle Deleting a Record

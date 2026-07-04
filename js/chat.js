@@ -714,7 +714,7 @@ async function fetchGroqResponse() {
 
     const typingId = 'typing-' + Date.now();
     if (!inVoiceMode) {
-        chatHistoryDOM.innerHTML += `<div id="${typingId}" class="message system-message mt-10 italic-gray">Talos is thinking...</div>`;
+        chatHistoryDOM.innerHTML += `<div id="${typingId}" class="message system-message mt-10 typing-indicator" aria-label="Talos is thinking"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
         scrollToBottom();
     }
 

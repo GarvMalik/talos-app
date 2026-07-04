@@ -35,30 +35,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('modalStep2').classList.remove('hidden');
     });
 
-    // 2. Submit Logic (Only saves when they click the green button)
-    document.getElementById('btnSubmitSummary').addEventListener('click', async () => {
+    // 2. Confirm Logic (Only saves when they click the green button)
+    document.getElementById('btnSubmitSummary').addEventListener('click', () => {
         if (currentSummaryRecord) {
             // Save the held record to the Past Summaries list
             let pastSummaries = JSON.parse(localStorage.getItem('talosPastSummaries')) || [];
             pastSummaries.unshift(currentSummaryRecord);
             localStorage.setItem('talosPastSummaries', JSON.stringify(pastSummaries));
 
-            // Email the summary to the doctor if intake provided an address
-            // and EmailJS credentials are configured (set in Settings).
-            const intake = JSON.parse(localStorage.getItem('talosIntake') || '{}');
-            if (intake.doctorEmail && typeof talosEmailSubmission !== 'undefined' && talosEmailSubmission.isInitialized) {
-                await talosEmailSubmission.submitToPhysician(
-                    currentSummaryRecord,
-                    intake.doctorEmail,
-                    intake.patientName || null
-                );
-            }
-
             // Clear the active chat history so it cannot be resubmitted
             localStorage.removeItem('talosChatHistory');
         }
 
-        // Trigger the transition to the success page
+        // Hand off to the share hub (QR / share sheet / PDF)
         if (typeof navigateTo === 'function') navigateTo('success.html');
     });
 
@@ -150,7 +139,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 date: new Date().toLocaleDateString(),
                 title: chatTitle,
                 notes: bullets,
-                patientName: intakeData.patientName || null
+                patientName: intakeData.patientName || null,
+                age:         intakeData.age         || null,
+                medications: intakeData.medications || null,
+                allergies:   intakeData.allergies   || null
             };
         } else {
             summaryList.innerHTML = '<li>Error generating summary from data.</li>';
